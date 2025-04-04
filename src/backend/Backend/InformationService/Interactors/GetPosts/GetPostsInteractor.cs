@@ -19,6 +19,7 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Po
     public async Task<Result<IEnumerable<Post>, ErrorsContainer>> ExecuteAsync(GetPostsParams param)
     {
         var query = _context.Posts
+            .AsNoTracking()
             .Include(p => p.History)
             .AsQueryable();
         if (param.Query != string.Empty)
