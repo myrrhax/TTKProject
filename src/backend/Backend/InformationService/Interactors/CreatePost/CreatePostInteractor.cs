@@ -44,23 +44,16 @@ public class CreatePostInteractor : IBaseInteractor<CreatePostParams, Post>
             UpdateTime = DateTime.UtcNow,
             Post = entity,
         };
-        using var transaction = _context.Database.BeginTransaction();
-
+        entity.History.Add(history);
         try
         {
-            
-            
             await _context.Posts.AddAsync(entity);
-            await _context.History.AddAsync(history);
             await _context.SaveChangesAsync();
-
-            await transaction.CommitAsync();
             
             return Result.Success<Post, ErrorsContainer>(entity);
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
             var errors = new ErrorsContainer();
             errors.AddError("Title", $"Статья с названием {param.Title} уже существует");
             return Result.Failure<Post, ErrorsContainer>(errors);
