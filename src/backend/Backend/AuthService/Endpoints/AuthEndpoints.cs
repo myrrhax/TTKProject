@@ -1,5 +1,11 @@
-﻿namespace AuthService.Endpoints;
+﻿using Carter;
 
-public class AuthEndpoints
+namespace AuthService.Endpoints;
+
+public class AuthEndpoints : ICarterModule
 {
+    public void AddRoutes(IEndpointRouteBuilder app)
+    {
+        
+    }
 }
