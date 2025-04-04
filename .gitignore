@@ -1,0 +1,28 @@
+# ASP.NET Core
+bin/
+obj/
+*.db
+*.db-shm
+*.db-wal
+*.pdb
+*.log
+secrets.json
+appsettings*.json
+.env
+
+# Node.js / React
+node_modules/
+dist/
+build/
+.vscode/
+.DS_Store
+*.lock
+*.cache
+.next/
+
+# IDE / OS
+*.suo
+*.user
+*.vs
+.idea/
+Thumbs.db
