@@ -31,7 +31,6 @@ public class AuthEndpoints : ICarterModule
         group.MapPost("refresh", Refresh)
             .Produces<RefreshResponseDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
-            .RequireAuthorization()
             .WithOpenApi();
 
         group.MapPost("logout", Logout)
