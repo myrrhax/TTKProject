@@ -13,19 +13,5 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> context): D
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
-
-        modelBuilder.Entity<ApplicationUser>()
-            .HasData(new ApplicationUser
-            {
-                Name = "Иван",
-                Surname = "Запара",
-                SecondName = "Иванович-Запарович",
-                Login = "ivan",
-
-            },
-            new ApplicationUser
-            {
-
-            });
     }
 }
