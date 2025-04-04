@@ -7,6 +7,7 @@ namespace InformationService.DataAccess;
 public class ApplicationContext(DbContextOptions<ApplicationContext> options): DbContext(options)
 {
     public DbSet<Post> Posts { get; set; } = null!;
+    public DbSet<PostHistory> History { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

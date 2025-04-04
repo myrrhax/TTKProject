@@ -18,7 +18,9 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Po
 
     public async Task<Result<IEnumerable<Post>, ErrorsContainer>> ExecuteAsync(GetPostsParams param)
     {
-        var query = _context.Posts.AsQueryable();
+        var query = _context.Posts
+            .Include(p => p.History)
+            .AsQueryable();
         if (param.Query != string.Empty)
         {
             query = query.Where(p => EF.Functions.ILike(p.Title, $"%{param.Query}%")
@@ -28,11 +30,11 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Po
 
         if (param.DateSortType == DateSortType.Descending)
         {
-            query = query.OrderByDescending(p => p.LastUpdateTime);
+            query = query.OrderByDescending(p => p.History.Last().UpdateTime);
         }
         else
         {
-            query = query.OrderBy(p => p.LastUpdateTime);
+            query = query.OrderBy(p => p.History.Last().UpdateTime);
         }
 
         var posts = await query.Skip(PAGE_SIZE * (param.Page - 1))

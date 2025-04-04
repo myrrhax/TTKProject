@@ -6,13 +6,8 @@ public class Post
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
     public DateTime CreationTime { get; set; } = DateTime.UtcNow;
-    public DateTime LastUpdateTime { get; set; } = DateTime.UtcNow;
-    public Guid LastRedactorId { get; set; }
-    public Guid ImageId { get; set; }
-    public EventType EventType { get; set; } = EventType.Created;
-}
+    public Guid? ImageId { get; set; }
+    public Guid CreatorId { get; set; }
 
-public enum EventType
-{
-    Created, Updated, Deleted
+    public List<PostHistory> History { get; set; } = [];
 }

@@ -2,6 +2,7 @@
 using InformationService.DataAccess;
 using InformationService.Entities;
 using InformationService.Utils;
+using System;
 
 namespace InformationService.Interactors.CreatePost;
 
@@ -27,23 +28,39 @@ public class CreatePostInteractor : IBaseInteractor<CreatePostParams, Post>
         }
         var entity = new Post
         {
+            PostId = Guid.NewGuid(),
+            ImageId = param.ImageId,
             Title = param.Title,
-            LastRedactorId = param.CreatorId,
-            LastUpdateTime = DateTime.UtcNow,
+            CreatorId = param.CreatorId,
             Content = param.Content ?? string.Empty,
-            EventType = EventType.Created,
-            CreationTime = DateTime.UtcNow,
+            CreationTime = DateTime.UtcNow
         };
+        var history = new PostHistory
+        {
+            PostId = entity.PostId,
+            Title = entity.Title,
+            RedactorId = entity.CreatorId,
+            EditType = EditType.Created,
+            UpdateTime = DateTime.UtcNow,
+            Post = entity,
+        };
+        using var transaction = _context.Database.BeginTransaction();
 
         try
         {
+            
+            
             await _context.Posts.AddAsync(entity);
+            await _context.History.AddAsync(history);
             await _context.SaveChangesAsync();
 
+            await transaction.CommitAsync();
+            
             return Result.Success<Post, ErrorsContainer>(entity);
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             var errors = new ErrorsContainer();
             errors.AddError("Title", $"Статья с названием {param.Title} уже существует");
             return Result.Failure<Post, ErrorsContainer>(errors);

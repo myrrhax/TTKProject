@@ -17,5 +17,9 @@ public class PostsConfiguration : IEntityTypeConfiguration<Post>
 
         builder.Property(p => p.Content)
             .IsRequired();
+
+        builder.HasMany(p => p.History)
+            .WithOne(h => h.Post)
+            .HasForeignKey(h => h.PostId);
     }
 }
