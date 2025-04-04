@@ -28,12 +28,21 @@ public class LoginInteractor : IBaseInteractor<LoginParams, LoginResponse>
 
     public async Task<Result<LoginResponse, ErrorsContainer>> ExecuteAsync(LoginParams param)
     {
+        var validator = new LoginParamsValidation();
+
+        var validationResult = validator.Validate(param);
+
+        if (!validationResult.IsValid)
+        {
+            var validationErrors = new ErrorsContainer(validationResult.Errors);
+            return Result.Failure<LoginResponse, ErrorsContainer>(validationErrors);
+        }
+
         var entity = await _context.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Login == param.Login);
 
         var errors = new ErrorsContainer();
-
         if (entity is null)
         {
             errors.AddError("Login", $"Пользователь с логином: {param.Login} не найден");

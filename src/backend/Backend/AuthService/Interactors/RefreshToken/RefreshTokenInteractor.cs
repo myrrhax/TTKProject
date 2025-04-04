@@ -12,18 +12,12 @@ public class RefreshTokenInteractor : IBaseInteractor<RefreshTokenParam, Refresh
 {
     private readonly ApplicationContext _context;
     private readonly ITokenGenerator _tokenGenerator;
-    private readonly IPasswordHasher _hasher;
-    private readonly IOptions<JwtConfig> _jwtConfig;
 
     public RefreshTokenInteractor(ApplicationContext context,
-        IPasswordHasher hasher,
-        ITokenGenerator tokenGenerator,
-        IOptions<JwtConfig> jwtConfig)
+        ITokenGenerator tokenGenerator)
     {
         _context = context;
         _tokenGenerator = tokenGenerator;
-        _hasher = hasher;
-        _jwtConfig = jwtConfig;
     }
 
     public async Task<Result<RefreshTokenResponse, ErrorsContainer>> ExecuteAsync(RefreshTokenParam param)
