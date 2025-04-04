@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+  auth_db:
+    image: postgres:latest
+    container_name: auth_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+
+  tasks_db:
+    image: postgres:latest
+    container_name: tasks_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tasks_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - tasks_data:/var/lib/postgresql/data
+
+  information_db:
+    image: postgres:latest
+    container_name: information_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: information_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - info_data:/var/lib/postgresql/data
+
+  administration_db:
+    image: postgres:latest
+    container_name: administration_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: administration_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - admin_data:/var/lib/postgresql/data
+
+volumes:
+  auth_data:
+  tasks_data:
+  info_data:
+  admin_data:
