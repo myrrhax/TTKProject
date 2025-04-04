@@ -7,6 +7,7 @@ namespace AuthService.DataAccess;
 public class ApplicationContext(DbContextOptions<ApplicationContext> context): DbContext(context)
 {
     public DbSet<ApplicationUser> Users { get; set; } = null!;
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,7 +19,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> context): D
             {
                 Name = "Иван",
                 Surname = "Запара",
-                SecondNname = "Иванович-Запарович",
+                SecondName = "Иванович-Запарович",
                 Login = "ivan",
 
             },

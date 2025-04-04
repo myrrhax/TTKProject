@@ -2,8 +2,9 @@
 
 namespace AuthService.Utils.JwtEncoder;
 
-public interface IJwtEncoder
+public interface ITokenGenerator
 {
     string GenerateAccessToken(ApplicationUser user);
     string GenerateRefreshToken();
+    Task<string> CreateRefreshToken(Guid userId);
 }
