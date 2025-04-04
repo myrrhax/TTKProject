@@ -7,7 +7,7 @@ obj/
 *.pdb
 *.log
 secrets.json
-appsettings*.json
+appsettings.Development.json
 .env
 
 # Node.js / React
