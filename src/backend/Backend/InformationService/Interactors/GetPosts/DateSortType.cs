@@ -1,5 +1,6 @@
 ﻿namespace InformationService.Interactors.GetPosts;
 
-public class GetPostsResult
+public enum DateSortType
 {
+    Ascending, Descending
 }
