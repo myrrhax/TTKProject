@@ -2,6 +2,30 @@
 /* It containds the Form and Page Styling*/
 @import "../Var.css";
 
+.taskWrap {
+  background: #f2f4f7;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  padding: 10px 20px;
+  transition: transform 0.2s;
+  width: 100%;
+  height: fit-content;
+  text-align: center;
+  margin: auto;
+  margin-top: 70px;
+  grid-template-columns: repeat(12, 1fr);
+  display: grid;
+}
+
+.title-bar {
+  grid-column: 2/12;
+  display: flex;
+  justify-content: space-between;
+  height: fit-content;
+}
+
 .task-component {
   grid-column: 2/12;
   display: flex;
