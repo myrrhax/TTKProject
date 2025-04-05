@@ -4,6 +4,8 @@ import Header from "./components/Header/Header";
 import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import TaskPage from "./TaskPage/TaskPage";
+import AdminPage from "./AdminPage/AdminPage";
+import ReaderPage from "./ReaderPage/Reader";
 import "./App.css";
 
 function App() {
@@ -15,7 +17,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/tasks" element={<TaskPage />} />
-          {/* Добавьте другие маршруты */}
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/articles" element={<ReaderPage />} />
         </Routes>
       </div>
     </Router>
