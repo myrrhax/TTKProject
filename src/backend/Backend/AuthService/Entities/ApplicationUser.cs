@@ -13,6 +13,7 @@ public class ApplicationUser
     public Role Role { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     public bool IsDeleted { get; set; } = false;
+    public Guid? AvatarId { get; set; } = null;
 
     public static implicit operator UserDto(ApplicationUser user)
     {
@@ -36,6 +37,7 @@ public class ApplicationUser
             CreationDate = user.CreationDate,
             IsDeleted = user.IsDeleted,
             Role = roleStr,
+            AvatarId = user.AvatarId,
         };
     }
 }

@@ -8,4 +8,5 @@ public class UserDto
     public string Role { get; set; } = string.Empty;
     public DateTime CreationDate { get; set; }
     public bool IsDeleted { get; set; }
+    public Guid? AvatarId { get; set; }
 }

@@ -23,13 +23,21 @@ public class RegisterInteractor : IBaseInteractor<RegisterParams, RegisterResult
 
     public async Task<Result<RegisterResult, ErrorsContainer>> ExecuteAsync(RegisterParams param)
     {
+        var errors = new ErrorsContainer();
+        if (!Guid.TryParse(param.AvatarId, out var avatarId))
+        {
+            errors.AddError("AvatarId", "Неверный формат идентификатора");
+            return Result.Failure<RegisterResult, ErrorsContainer>(errors);
+        } 
+
         var entity = new ApplicationUser
         {
             Login = param.Login,
             Name = param.Name,
             Surname = param.Surname,
             SecondName = param.SecondName,
-            PasswordHash = _hasher.HashPassword(param.Password)
+            PasswordHash = _hasher.HashPassword(param.Password),
+            AvatarId = avatarId,
         };
         try
         {
@@ -44,7 +52,7 @@ public class RegisterInteractor : IBaseInteractor<RegisterParams, RegisterResult
         }
         catch (Exception ex)
         {
-            var errors = new ErrorsContainer();
+            
             errors.AddError("Login", "Пользователь с данным логином уже существует");
             return Result.Failure<RegisterResult, ErrorsContainer>(errors);
         }
