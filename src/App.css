@@ -1,5 +1,6 @@
 /* Filename - App.css */
 /* It containds the Form and Page Styling*/
+@import "./modern-normalize.css";
 @import "./Var.css";
 
 ::selection {
@@ -8,7 +9,7 @@
 }
 
 body {
-  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-family: 'Inter', sans-serif;
   padding-top: 50px;
 }
 .App {
