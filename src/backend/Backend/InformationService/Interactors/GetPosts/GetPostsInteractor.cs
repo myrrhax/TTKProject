@@ -20,7 +20,10 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, GetPostsResult
     {
         var query = _context.Posts
             .AsNoTracking()
-            .Include(p => p.History)
+            .Include(p => p.History.OrderByDescending(ph => ph.UpdateTime))
+            .Where(p => p.History
+                .OrderByDescending(ph => ph.UpdateTime)
+                .First().EditType != EditType.Deleted)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(param.Query))

@@ -6,8 +6,6 @@ public class UpdatePostParamsValidator : AbstractValidator<UpdatePostParams>
 {
     public UpdatePostParamsValidator()
     {
-        // Guid PostId, Guid EditorId, string? NewTitle, string? NewContent, Guid? NewImageId
-
         RuleFor(p => p.NewTitle)
             .MinimumLength(5)
             .When(p => p.NewTitle != null)
@@ -17,5 +15,11 @@ public class UpdatePostParamsValidator : AbstractValidator<UpdatePostParams>
             .MaximumLength(550)
             .When(p => p.NewContent != null)
             .WithMessage("Превышен размер статьи");
+
+        RuleFor(p => p.NewImageId)
+            .NotEmpty()
+            .Must(p => Guid.TryParse(p, out _))
+            .When(p => p.NewImageId != null)
+            .WithMessage("Неправильный идентификатор картинки");
     }
 }

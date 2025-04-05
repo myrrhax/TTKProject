@@ -1,12 +1,15 @@
 using Carter;
+using InformationService.Background;
 using InformationService.Configuration;
 using InformationService.DataAccess;
 using InformationService.Entities;
 using InformationService.Interactors;
 using InformationService.Interactors.CreatePost;
 using InformationService.Interactors.DeletePost;
+using InformationService.Interactors.GetHistory;
 using InformationService.Interactors.GetPost;
 using InformationService.Interactors.GetPosts;
+using InformationService.Interactors.RestorePost;
 using InformationService.Interactors.UpdatePost;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -26,11 +29,13 @@ builder.Services.AddCarter();
 
 #region Interactors
 builder.Services.AddScoped<IBaseInteractor<CreatePostParams, Post>, CreatePostInteractor>();
-builder.Services.AddScoped<IBaseInteractor<DeletePostParams, Post>, DeletePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<DeletePostParams, Guid>, DeletePostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<Guid, Post>, GetPostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<GetPostsParams, GetPostsResult>, GetPostsInteractor>();
 builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Post>, UpdatePostInteractor>();
 #endregion
+
+builder.Services.AddHostedService<DeleteOldPosts>();
 
 var app = builder.Build();
 

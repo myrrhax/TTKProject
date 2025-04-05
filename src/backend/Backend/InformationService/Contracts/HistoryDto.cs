@@ -1,6 +1,6 @@
 ﻿namespace InformationService.Contracts;
 
-public record HistoryDto(Guid PostId, 
+public record HistoryDto(string PostId, 
     string Title, 
     Guid RedactorId, 
     string EditType, 

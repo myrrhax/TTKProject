@@ -1,4 +1,4 @@
-﻿namespace InformationService.Interactors.GetPosts;
+﻿namespace InformationService.Utils;
 
 public enum DateSortType
 {
