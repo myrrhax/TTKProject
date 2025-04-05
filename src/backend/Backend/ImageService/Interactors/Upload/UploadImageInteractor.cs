@@ -2,7 +2,6 @@
 using ImageService.DataAccess;
 using ImageService.Entities;
 using ImageService.Utils;
-using Microsoft.AspNetCore.Http;
 
 namespace ImageService.Interactors.Upload;
 
