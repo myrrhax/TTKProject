@@ -1,115 +1,135 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AuthForm.css";
 
-function AuthForm({ onClose }) {
-  const [title, setTitle] = useState("");
-  const [assignee, setAssignee] = useState("");
-  const [priority, setPriority] = useState("low");
-  const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState("");
+function AuthForm({ mode }) {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    login: "",
+    fio: "",
+    password: "",
+    confirmPassword: ""
+  });
+  const [errors, setErrors] = useState({});
+  const switchMode = (path) => {
+    navigate(path);
+  };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validate = () => {
+    const newErrors = {};
+
+    // Общие проверки для логина и регистрации
+    if (!/^[a-zA-Z]+$/.test(formData.login)) {
+      newErrors.login = "Логин должен содержать только латинские буквы";
+    }
+
+    if (mode === "register") {
+      // Проверки для регистрации
+      if (!/^[а-яА-ЯёЁ\s]+$/.test(formData.fio)) {
+        newErrors.fio = "ФИО должно содержать только русские буквы";
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        newErrors.confirmPassword = "Пароли не совпадают";
+      }
+
+      if (!/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+}{":;'?/>.<,][^\\]{6,}$/.test(formData.password)) {
+        newErrors.password = "Пароль должен содержать латинские буквы, цифры и специальные символы";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const taskData = { title, assignee, priority, description, deadline };
-    console.log("📌 Submitted Task:", taskData);
-    onClose(); // Закрываем модалку после отправки
-  };
-
-  const handleReset = () => {
-    setTitle("");
-    setAssignee("");
-    setPriority("low");
-    setDescription("");
-    setDeadline("");
+    if (validate()) {
+      console.log("Данные формы:", formData);
+      navigate("/tasks");
+    }
   };
 
   return (
-    <form className="task-form" onSubmit={handleSubmit}>
-      <h2>Создание задачи</h2>
-      {/* поля формы */}
-      <label htmlFor="title">Название задачи</label>
-      <input
-        id="title"
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Введите название"
-        required
-      />
+    <form className="auth-form" onSubmit={handleSubmit}>
+      <h2>{mode === "login" ? "Вход" : "Регистрация"}</h2>
+      <p>Введите свои учетные данные для доступа</p>
 
-      <label htmlFor="assignee">Ответственный</label>
-      <select
-        id="assignee"
-        value={assignee}
-        onChange={(e) => setAssignee(e.target.value)}
-        required
-      >
-        <option value="" disabled>
-          Выберите исполнителя
-        </option>
-        <option value="Олег">ОЛЕГ</option>
-        <option value="Иван">Иван</option>
-        <option value="Василий">Василий</option>
-        <option value="Степан">Степан</option>
-        <option value="Илья">Илья</option>
-      </select>
+      <label>
+        Логин
+        <input
+          type="text"
+          name="login"
+          value={formData.login}
+          onChange={handleChange}
+          placeholder="Введите ваш логин"
+          required
+        />
+        {errors.login && <div className="error">{errors.login}</div>}
+      </label>
 
-      <label htmlFor="description">Описание</label>
-      <textarea
-        id="description"
-        rows="5"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Опишите задачу"
-        required
-      ></textarea>
-
-      <label htmlFor="deadline">Дедлайн</label>
-      <input
-        id="deadline"
-        type="date"
-        value={deadline}
-        onChange={(e) => setDeadline(e.target.value)}
-        required
-      />
-
-      <label>Приоритет</label>
-      <div className="priority-options">
+      {mode === "register" && (
         <label>
+          ФИО
           <input
-            type="radio"
-            value="high"
-            checked={priority === "high"}
-            onChange={(e) => setPriority(e.target.value)}
+            type="text"
+            name="fio"
+            value={formData.fio}
+            onChange={handleChange}
+            placeholder="Введите ваше ФИО"
+            required
           />
-          Высокий
+          {errors.fio && <div className="error">{errors.fio}</div>}
         </label>
-        <label>
-          <input
-            type="radio"
-            value="medium"
-            checked={priority === "medium"}
-            onChange={(e) => setPriority(e.target.value)}
-          />
-          Средний
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="low"
-            checked={priority === "low"}
-            onChange={(e) => setPriority(e.target.value)}
-          />
-          Низкий
-        </label>
-      </div>
+      )}
 
-      <div className="form-buttons">
-        <button type="submit">Создать</button>
-        <button type="button" onClick={handleReset}>
-          Очистить
-        </button>
-      </div>
+      <label>
+        Пароль
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Введите ваш пароль"
+          required
+        />
+        {errors.password && <div className="error">{errors.password}</div>}
+      </label>
+
+      {mode === "register" && (
+        <label>
+          Повторите пароль
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Введите ваш пароль еще раз"
+            required
+          />
+          {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
+        </label>
+      )}
+
+      <button type="submit" className="auth-button">
+        {mode === "login" ? "Войти" : "Зарегистрироваться"}
+      </button>
+
+      {mode === "login" && (
+        <p className="switch-mode">
+          Нет аккаунта?{" "}
+          <span onClick={() => switchMode("/register")}>Зарегистрироваться</span>
+        </p>
+      )}
+      {mode === "register" && (
+        <p className="switch-mode">
+          Уже есть аккаунт?{" "}
+          <span onClick={() => switchMode("/login")}>Войти</span>
+        </p>
+      )}
     </form>
   );
 }
