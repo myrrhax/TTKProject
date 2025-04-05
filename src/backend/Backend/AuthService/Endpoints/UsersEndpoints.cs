@@ -20,14 +20,14 @@ public class UsersEndpoints : ICarterModule
 
     public async Task<Results<Ok<GetUsersResponse>, NotFound>> GetUsers(IBaseInteractor<GetUsersParams, GetUsersResult> interactor,
         int page = 1,
-        string sortByLogin = "asc",
-        string sortByFullname = "asc",
+        string? sortByLogin = null,
+        string? sortByFullname = null,
         string? sortByRole = null,
-        string sortByRegistrationDate = "asc")
+        string? sortByRegistrationDate = null)
     {
-        SortOptions loginSort = sortByLogin == "asc" ? SortOptions.ASCENDING : SortOptions.DESCENDING;
-        SortOptions nameSort = sortByFullname == "asc" ? SortOptions.ASCENDING : SortOptions.DESCENDING;
-        SortOptions registrationSort = sortByRegistrationDate == "asc" ? SortOptions.ASCENDING : SortOptions.DESCENDING;
+        var loginSort = GetSortOptions(sortByLogin);
+        var nameSort = GetSortOptions(sortByFullname);
+        var dateSort = GetSortOptions(sortByRegistrationDate);
 
         Role? sortRole;
         switch (sortByRole)
@@ -43,7 +43,7 @@ public class UsersEndpoints : ICarterModule
                 break;
         }
 
-        var param = new GetUsersParams(page, loginSort, nameSort, sortRole, registrationSort);
+        var param = new GetUsersParams(page, loginSort, nameSort, sortRole, dateSort);
         var result = await interactor.ExecuteAsync(param);
 
         if (result.IsSuccess)
@@ -59,5 +59,24 @@ public class UsersEndpoints : ICarterModule
         }
 
         return TypedResults.NotFound();
+    }
+
+    private static SortOptions GetSortOptions(string? filterName)
+    {
+        SortOptions sortType;
+        switch (filterName)
+        {
+            case "asc":
+                sortType = SortOptions.ASCENDING;
+                break;
+            case "desc":
+                sortType = SortOptions.DESCENDING;
+                break;
+            default:
+                sortType = SortOptions.NONE;
+                break;
+        }
+
+        return sortType;
     }
 }

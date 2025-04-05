@@ -2,5 +2,5 @@
 
 public enum SortOptions
 {
-    ASCENDING, DESCENDING
+    ASCENDING, DESCENDING, NONE
 }

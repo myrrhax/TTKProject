@@ -19,6 +19,7 @@ public class GetUsersListInteractor(ApplicationContext context) : IBaseInteracto
         }
 
         query = ApplySorting(query, param);
+        string q = query.ToQueryString();
 
         var totalUsers = await query.CountAsync();
         var maxPages = (int)Math.Ceiling(totalUsers / (double) PAGE_SIZE);
@@ -40,22 +41,53 @@ public class GetUsersListInteractor(ApplicationContext context) : IBaseInteracto
 
     private IQueryable<ApplicationUser> ApplySorting(IQueryable<ApplicationUser> query, GetUsersParams filter)
     {
-        if (filter.SortByLogin == SortOptions.ASCENDING)
-            query = query.OrderBy(u => u.Login);
-        else
-            query = query.OrderByDescending(u => u.Login);
+        if (filter.SortByRole is not null)
+        {
+            query = query.Where(p => p.Role == filter.SortByRole);
+        }
 
-        if (filter.SortByFullname == SortOptions.ASCENDING)
-            query = ((IOrderedQueryable<ApplicationUser>)query).ThenBy(u => u.Surname + u.Name + u.SecondName);
-        else
-            query = ((IOrderedQueryable<ApplicationUser>)query).ThenByDescending(u => u.Surname + u.Name + u.SecondName);
+        IOrderedQueryable<ApplicationUser>? resultQuery = null;
 
-        if (filter.SortByRegistrationDate == SortOptions.ASCENDING)
-            query = ((IOrderedQueryable<ApplicationUser>)query).ThenBy(u => u.CreationDate);
-        else
-            query = ((IOrderedQueryable<ApplicationUser>)query).ThenByDescending(u => u.CreationDate);
+        if (filter.SortByFullname != SortOptions.NONE)
+        {
+            resultQuery = filter.SortByFullname == SortOptions.ASCENDING
+                ? query.OrderBy(u => u.Surname + u.Name + u.SecondName)
+                : query.OrderByDescending(u => u.Surname + u.Name + u.SecondName);
+        }
 
-        return query;
+        if (filter.SortByRegistrationDate != SortOptions.NONE)
+        {
+            if (resultQuery != null)
+            {
+                resultQuery = filter.SortByRegistrationDate == SortOptions.ASCENDING
+                    ? resultQuery.ThenBy(u => u.CreationDate)
+                    : resultQuery.ThenByDescending(u => u.CreationDate);
+            }
+            else
+            {
+                resultQuery = filter.SortByRegistrationDate == SortOptions.ASCENDING
+                    ? query.OrderBy(u => u.CreationDate)
+                    : query.OrderByDescending(u => u.CreationDate);
+            }
+        }
+
+        if (filter.SortByLogin != SortOptions.NONE)
+        {
+            if (resultQuery != null)
+            {
+                resultQuery = filter.SortByLogin == SortOptions.ASCENDING
+                    ? resultQuery.ThenBy(u => u.Login)
+                    : resultQuery.ThenByDescending(u => u.Login);
+            }
+            else
+            {
+                resultQuery = filter.SortByLogin == SortOptions.ASCENDING
+                    ? query.OrderBy(u => u.Login)
+                    : query.OrderByDescending(u => u.Login);
+            }
+        }
+
+        return resultQuery ?? query;
     }
 
 }
