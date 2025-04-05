@@ -21,10 +21,8 @@ public class PostsEndpoints : ICarterModule
 
         group.MapGet("/{id:guid}", GetPostById)
             .WithOpenApi();
-
         group.MapGet("", GetPosts)
             .WithOpenApi();
-
         group.MapPost("", AddPost)
             .WithOpenApi();
         group.MapPut("/{id:guid}", UpdatePost)
@@ -33,6 +31,22 @@ public class PostsEndpoints : ICarterModule
             .WithOpenApi();
         group.MapPost("/restore", RestorePost)
             .WithOpenApi();
+    }
+
+    private async Task<Results<Ok, BadRequest<ErrorsContainer>>> UpdatePost(IBaseInteractor<UpdatePostParams, Guid> interactor,
+        Guid id, 
+        [FromBody]UpdatePostDto dto)
+    {
+        var userId = Guid.NewGuid();
+        var param = new UpdatePostParams(id, userId, dto.Title, dto.Content, dto.ImageId);
+        var result = await interactor.ExecuteAsync(param);
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok();
+        }
+
+        return TypedResults.BadRequest(result.Error);
     }
 
     public async Task<Results<Ok<PostDto>, NotFound>> GetPostById(

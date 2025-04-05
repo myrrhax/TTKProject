@@ -25,16 +25,18 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddCarter();
 
 #region Interactors
 builder.Services.AddScoped<IBaseInteractor<CreatePostParams, Post>, CreatePostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<DeletePostParams, Guid>, DeletePostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<Guid, Post>, GetPostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<GetPostsParams, GetPostsResult>, GetPostsInteractor>();
-builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Post>, UpdatePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Guid>, UpdatePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<GetHistoryParams, IEnumerable<PostHistory>>, GetHistoryInteractor>();
+builder.Services.AddScoped<IBaseInteractor<RestorePostParams, bool>, RestorePostInteractor>();
 #endregion
 
+builder.Services.AddCarter();
 builder.Services.AddHostedService<DeleteOldPosts>();
 
 var app = builder.Build();
