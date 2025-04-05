@@ -1,9 +1,11 @@
 ﻿using AuthService.Contracts;
 using AuthService.Contracts.ChangePassword;
+using AuthService.Contracts.ChangeRole;
 using AuthService.Contracts.GetUsers;
 using AuthService.Entities;
 using AuthService.Interactors;
 using AuthService.Interactors.ChangePassword;
+using AuthService.Interactors.ChangeRole;
 using AuthService.Interactors.DeleteUser;
 using AuthService.Interactors.GetUsers;
 using AuthService.Utils;
@@ -25,6 +27,9 @@ public class UsersEndpoints : ICarterModule
             .WithOpenApi();
 
         group.MapPatch("/change-password", ChangePassword)
+            .WithOpenApi();
+
+        group.MapPatch("/change-role", ChangeRole)
             .WithOpenApi();
     }
 
@@ -70,6 +75,22 @@ public class UsersEndpoints : ICarterModule
         }
 
         return TypedResults.NotFound();
+    }
+
+    public async Task<Results<Ok, BadRequest<ErrorsContainer>>> ChangeRole(ChangeRoleRequest req,
+        IBaseInteractor<ChangeRoleParams, bool> interactor)
+    {
+
+        Role role = req.Role == "admin" ? Role.Admin : Role.User;
+
+        var param = new ChangeRoleParams(req.UserId, role);
+        var result = await interactor.ExecuteAsync(param);
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok();
+        }
+        return TypedResults.BadRequest(result.Error);
     }
 
     public async Task<Results<Ok, BadRequest<ErrorsContainer>>> ChangePassword(ChangePasswordRequest req,
