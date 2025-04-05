@@ -5,6 +5,7 @@ using InformationService.Entities;
 using InformationService.Interactors;
 using InformationService.Interactors.CreatePost;
 using InformationService.Interactors.DeletePost;
+using InformationService.Interactors.GetHistory;
 using InformationService.Interactors.GetPost;
 using InformationService.Interactors.GetPosts;
 using InformationService.Interactors.RestorePost;
@@ -31,6 +32,7 @@ builder.Services.AddScoped<IBaseInteractor<Guid, Post>, GetPostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<GetPostsParams, IEnumerable<Post>>, GetPostsInteractor>();
 builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Guid>, UpdatePostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<RestorePostParams, bool>, RestorePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<GetHistoryParams, IEnumerable<PostHistory>>, GetHistoryInteractor>();
 #endregion
 
 var app = builder.Build();

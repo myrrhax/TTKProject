@@ -28,9 +28,9 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Po
 
         if (param.Query != string.Empty)
         {
-            query = query.Where(p => EF.Functions.ILike(p.Title, $"%{param.Query}%")
-                || p.Content.Contains(param.Query) 
-                || EF.Functions.ILike(p.PostId.ToString(), $"%{param.Query}%"));
+            query = query.Where(p => p.Title.ToLower().Contains(param.Query.ToLower())
+                || p.Content.ToLower().Contains(param.Query.ToLower()) 
+                || p.PostId.ToString().Contains(param.Query.ToLower()));
         }
 
         if (param.DateSortType == DateSortType.Descending)

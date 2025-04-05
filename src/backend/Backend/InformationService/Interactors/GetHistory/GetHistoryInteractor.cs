@@ -17,8 +17,8 @@ public class GetHistoryInteractor(ApplicationContext context) : IBaseInteractor<
 
         if (param.Query != null && param.Query != string.Empty)
         {
-            query = query.Where(h => EF.Functions.ILike(h.Title, $"%{param.Query}%")
-                || h.PostId.ToString().Contains(param.Query));
+            query = query.Where(h => h.Title.ToLower().Contains(param.Query.ToLower())
+                || h.PostId.ToString().ToLower().Contains(param.Query.ToLower()));
         }
 
         if (param.DateSortType == DateSortType.Descending)
