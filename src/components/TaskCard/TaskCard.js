@@ -7,19 +7,26 @@ const TaskCard = () => {
     <div className="task-card">
       <div className="task-card-header">
         <div>
-          <h3 className="task-title">Set Up Backend Infrastructure</h3>
+          <div>
+            <h3 className="task-title">Set Up Backend Infrastructure</h3>
+          </div>
           <div className="task-dates">
             <span className="dead-date">
-              <span>06.08.25</span>
-              <span className="task-deadline">15.08.25</span>
+              <div class="status">
+                <span>06.08.25</span>
+                <span class="arrow-right"></span>
+                <span className="task-deadline">15.08.25</span>
+              </div>
             </span>
-            <span className="task-priority">Высокий</span>
+            <span>
+              <span class="status-dot"></span>
+              <span className="task-priority">Высокий</span>
+            </span>
           </div>
           <p className="task-description">
             Prepare the server environment and database for app development.
           </p>
         </div>
-        <Pencil className="task-edit-icon" />
       </div>
 
       <div class="content-card">
@@ -37,11 +44,13 @@ const TaskCard = () => {
             </div>
           </div>
           <div className="task-actions">
+            <button className="change-button">
+              <Pencil className="task-edit-icon" />
+            </button>
             <button className="task-button">Выполнить</button>
             <button className="task-status">В работу</button>
           </div>
         </div>
-        <div class="info_side"></div>
       </div>
     </div>
   );

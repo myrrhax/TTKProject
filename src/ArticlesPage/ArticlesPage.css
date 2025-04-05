@@ -1,0 +1,28 @@
+@import "../Var.css";
+
+.article-page {
+  grid-column: 2/12;
+  display: flex;
+  justify-content: space-between;
+  gap: 5rem;
+  flex-direction: column;
+}
+
+.article-section {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  padding: 1rem;
+  gap: 2rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.article-section h2 {
+  font-size: var(--font-size-big);
+  text-align: start;
+  font-weight: 500;
+  color: var(--input-focus);
+  margin-bottom: 1rem;
+}
