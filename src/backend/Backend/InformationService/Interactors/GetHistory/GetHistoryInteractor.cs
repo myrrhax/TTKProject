@@ -15,7 +15,7 @@ public class GetHistoryInteractor(ApplicationContext context) : IBaseInteractor<
             .Include(h => h.Post)
             .AsQueryable();
 
-        if (param.Query != null)
+        if (param.Query != null && param.Query != string.Empty)
         {
             query = query.Where(h => EF.Functions.ILike(h.Title, $"%{param.Query}%")
                 || h.PostId.ToString().Contains(param.Query));
