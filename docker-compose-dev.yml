@@ -53,6 +53,22 @@ services:
     volumes:
       - admin_data:/var/lib/postgresql/data
 
+  image_service:
+    build:
+      context: ./src/backend/Backend/ImageService
+      dockerfile: Dockerfile
+    container_name: image_service
+    ports:
+      - "5002:8080"
+    depends_on:
+      - information_db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=information_db;Port=5432;Database=information_db;Username=postgres;Password=postgres
+    volumes:
+      - ./uploads:/app/uploads
+
+
 volumes:
   auth_data:
   tasks_data:
