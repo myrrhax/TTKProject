@@ -29,9 +29,9 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddDocumentation();
 
 #region Interactors
-builder.Services.AddScoped<IBaseInteractor<RegisterParams, RegisterResponse>, RegisterInteractor>();
-builder.Services.AddScoped<IBaseInteractor<LoginParams, LoginResponse>, LoginInteractor>();
-builder.Services.AddScoped<IBaseInteractor<RefreshTokenParam, RefreshTokenResponse>, RefreshTokenInteractor>();
+builder.Services.AddScoped<IBaseInteractor<RegisterParams, RegisterResult>, RegisterInteractor>();
+builder.Services.AddScoped<IBaseInteractor<LoginParams, LoginResult>, LoginInteractor>();
+builder.Services.AddScoped<IBaseInteractor<RefreshTokenParam, RefreshTokenResult>, RefreshTokenInteractor>();
 #endregion
 
 var app = builder.Build();

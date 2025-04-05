@@ -8,25 +8,19 @@ using Microsoft.Extensions.Options;
 
 namespace AuthService.Interactors.RefreshToken;
 
-public class RefreshTokenInteractor : IBaseInteractor<RefreshTokenParam, RefreshTokenResponse>
+public class RefreshTokenInteractor : IBaseInteractor<RefreshTokenParam, RefreshTokenResult>
 {
     private readonly ApplicationContext _context;
     private readonly ITokenGenerator _tokenGenerator;
-    private readonly IPasswordHasher _hasher;
-    private readonly IOptions<JwtConfig> _jwtConfig;
 
     public RefreshTokenInteractor(ApplicationContext context,
-        IPasswordHasher hasher,
-        ITokenGenerator tokenGenerator,
-        IOptions<JwtConfig> jwtConfig)
+        ITokenGenerator tokenGenerator)
     {
         _context = context;
         _tokenGenerator = tokenGenerator;
-        _hasher = hasher;
-        _jwtConfig = jwtConfig;
     }
 
-    public async Task<Result<RefreshTokenResponse, ErrorsContainer>> ExecuteAsync(RefreshTokenParam param)
+    public async Task<Result<RefreshTokenResult, ErrorsContainer>> ExecuteAsync(RefreshTokenParam param)
     {
         var entityToken = await _context.RefreshTokens
             .Include(t => t.User)
@@ -36,7 +30,7 @@ public class RefreshTokenInteractor : IBaseInteractor<RefreshTokenParam, Refresh
         if (entityToken is null || DateTime.UtcNow >= entityToken.ExpirationDate)
         {
             errors.AddError("Token", "Токен не найден");
-            return Result.Failure<RefreshTokenResponse, ErrorsContainer>(errors);
+            return Result.Failure<RefreshTokenResult, ErrorsContainer>(errors);
         }
             
 
@@ -46,6 +40,6 @@ public class RefreshTokenInteractor : IBaseInteractor<RefreshTokenParam, Refresh
 
         string jwtToken = _tokenGenerator.GenerateAccessToken(entityToken.User);
 
-        return new RefreshTokenResponse(jwtToken, entityToken.Token);
+        return new RefreshTokenResult(jwtToken, entityToken.Token);
     }
 }

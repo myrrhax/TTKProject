@@ -19,7 +19,7 @@ public class AuthEndpoints : ICarterModule
         var group = app.MapGroup("api/auth");
 
         group.MapPost("login", Login)
-            .Produces<LoginResponse>(StatusCodes.Status200OK)
+            .Produces<LoginResult>(StatusCodes.Status200OK)
             .Produces<ErrorsContainer>(StatusCodes.Status400BadRequest)
             .WithOpenApi();
 
@@ -31,7 +31,6 @@ public class AuthEndpoints : ICarterModule
         group.MapPost("refresh", Refresh)
             .Produces<RefreshResponseDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
-            .RequireAuthorization()
             .WithOpenApi();
 
         group.MapPost("logout", Logout)
@@ -40,7 +39,7 @@ public class AuthEndpoints : ICarterModule
     }
 
     private async Task<Results<Ok<RefreshResponseDto>, NotFound>> Refresh(HttpContext context,
-        IBaseInteractor<RefreshTokenParam, RefreshTokenResponse> interactor,
+        IBaseInteractor<RefreshTokenParam, RefreshTokenResult> interactor,
         IConfiguration configuration)
     {
         if (!context.Request.Cookies.ContainsKey(configuration["JwtConfig:CookieName"]!))
@@ -60,7 +59,7 @@ public class AuthEndpoints : ICarterModule
 
     public async Task<Results<Ok<LoginResponseDto>, BadRequest<ErrorsContainer>>> Login(LoginRequestDto dto,
         HttpContext context,
-        IBaseInteractor<LoginParams, LoginResponse> interactor,
+        IBaseInteractor<LoginParams, LoginResult> interactor,
         IConfiguration configuration)
     {
         var param = new LoginParams(dto.Login, dto.Password);
@@ -84,7 +83,7 @@ public class AuthEndpoints : ICarterModule
 
     public async Task<Results<Ok<RegisterResponseDto>, BadRequest<ErrorsContainer>>> Register(RegisterRequestDto dto,
         HttpContext context,
-        IBaseInteractor<RegisterParams, RegisterResponse> interactor,
+        IBaseInteractor<RegisterParams, RegisterResult> interactor,
         IConfiguration configuration)
     {
         var param = new RegisterParams(dto.Login, dto.Password, dto.Name, dto.Surname, dto.SecondName);

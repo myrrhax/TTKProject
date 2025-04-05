@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace AuthService.Interactors.Register;
 
-public class RegisterInteractor : IBaseInteractor<RegisterParams, RegisterResponse>
+public class RegisterInteractor : IBaseInteractor<RegisterParams, RegisterResult>
 {
     private readonly IPasswordHasher _hasher; 
     private readonly ITokenGenerator _tokenGenerator;
@@ -21,7 +21,7 @@ public class RegisterInteractor : IBaseInteractor<RegisterParams, RegisterRespon
         _context = context;
     }
 
-    public async Task<Result<RegisterResponse, ErrorsContainer>> ExecuteAsync(RegisterParams param)
+    public async Task<Result<RegisterResult, ErrorsContainer>> ExecuteAsync(RegisterParams param)
     {
         var entity = new ApplicationUser
         {
@@ -38,15 +38,15 @@ public class RegisterInteractor : IBaseInteractor<RegisterParams, RegisterRespon
 
             var token = _tokenGenerator.GenerateAccessToken(entity);
             var refreshToken = await _tokenGenerator.CreateRefreshToken(entity.UserId);
-            var response = new RegisterResponse(token, refreshToken);
+            var response = new RegisterResult(token, refreshToken);
 
-            return Result.Success<RegisterResponse, ErrorsContainer>(response);
+            return Result.Success<RegisterResult, ErrorsContainer>(response);
         }
         catch (Exception ex)
         {
             var errors = new ErrorsContainer();
             errors.AddError("Login", "Пользователь с данным логином уже существует");
-            return Result.Failure<RegisterResponse, ErrorsContainer>(errors);
+            return Result.Failure<RegisterResult, ErrorsContainer>(errors);
         }
     }
 }

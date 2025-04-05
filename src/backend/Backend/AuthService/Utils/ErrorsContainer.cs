@@ -10,6 +10,15 @@ public class ErrorsContainer
         _errors = new Dictionary<string, List<string>>();
     }
 
+    public ErrorsContainer(IEnumerable<FluentValidation.Results.ValidationFailure> failures)
+        : this()
+    {
+        foreach (var failure in failures)
+        {
+            AddError(failure.PropertyName, failure.ErrorMessage);
+        }
+    }
+
     public void AddError(string errorField, string message)
     {
         if (!_errors.ContainsKey(errorField))

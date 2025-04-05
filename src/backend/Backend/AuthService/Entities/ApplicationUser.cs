@@ -9,6 +9,6 @@ public class ApplicationUser
     public string Surname { get; set; } = string.Empty;
     public string? SecondName { get; set; }
     public Role Role { get; set; }
-    public DateTime CreationDate { get; set; } = DateTime.Now;
+    public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     public bool IsDeleted { get; set; } = false;
 }
