@@ -13,5 +13,6 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options): D
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new PostsConfiguration());
+        modelBuilder.ApplyConfiguration(new PostHistoryConfiguration());
     }
 }

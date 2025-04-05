@@ -31,7 +31,10 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Po
 
         if (param.DateSortType == DateSortType.Descending)
         {
-            query = query.OrderByDescending(p => p.History.Last().UpdateTime);
+            query = query.OrderByDescending(p => p.History
+                .OrderByDescending(ph => ph.UpdateTime)
+                .Last()
+                .UpdateTime);
         }
         else
         {

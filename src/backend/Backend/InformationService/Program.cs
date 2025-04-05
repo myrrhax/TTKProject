@@ -51,4 +51,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
+app.MapCarter();
 app.Run();

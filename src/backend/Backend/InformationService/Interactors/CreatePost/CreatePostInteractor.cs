@@ -2,7 +2,6 @@
 using InformationService.DataAccess;
 using InformationService.Entities;
 using InformationService.Utils;
-using System;
 
 namespace InformationService.Interactors.CreatePost;
 
@@ -49,7 +48,7 @@ public class CreatePostInteractor : IBaseInteractor<CreatePostParams, Post>
         {
             await _context.Posts.AddAsync(entity);
             await _context.SaveChangesAsync();
-            
+
             return Result.Success<Post, ErrorsContainer>(entity);
         }
         catch (Exception ex)

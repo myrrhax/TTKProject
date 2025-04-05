@@ -1,4 +1,6 @@
-﻿namespace InformationService.Entities;
+﻿using InformationService.Contracts;
+
+namespace InformationService.Entities;
 
 public class Post
 {
@@ -10,4 +12,14 @@ public class Post
     public Guid CreatorId { get; set; }
 
     public List<PostHistory> History { get; set; } = [];
+
+    public static implicit operator PostDto(Post post)
+    {
+        var dtos = new List<HistoryDto>();
+        foreach (var postHistory in post.History)
+        {
+            dtos.Add(postHistory);
+        }
+        return new PostDto(post.PostId, post.Title, post.Content, post.CreationTime, post.ImageId, post.CreatorId, dtos);
+    }
 }
