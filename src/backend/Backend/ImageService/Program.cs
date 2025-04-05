@@ -21,9 +21,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 // Carter
 builder.Services.AddCarter();
 
-// Подключаем заглушку авторизации
-builder.Services.AddAuthentication("Dummy")
-    .AddScheme<AuthenticationSchemeOptions, DummyAuthHandler>("Dummy", null);
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
 // Интеракторы и утилиты
@@ -35,6 +33,8 @@ builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
 {
     policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 }));
+
+builder.Services.AddAuthentication();
 
 var app = builder.Build();
 

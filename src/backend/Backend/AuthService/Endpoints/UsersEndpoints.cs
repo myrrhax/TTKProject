@@ -23,19 +23,24 @@ public class UsersEndpoints : ICarterModule
         var group = app.MapGroup("api/users");
         
         group.MapGet("", GetUsers)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly");
 
         group.MapDelete("/{id:guid}", DeleteUser)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly");
 
         group.MapPatch("/change-password", ChangePassword)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly"); ;
 
         group.MapPatch("/change-role", ChangeRole)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly"); ;
 
         group.MapPut("", UpdateUser)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly"); ;
     }
 
     public async Task<Results<Ok, BadRequest<ErrorsContainer>>> UpdateUser(IBaseInteractor<EditUserParams, bool> interactor, 

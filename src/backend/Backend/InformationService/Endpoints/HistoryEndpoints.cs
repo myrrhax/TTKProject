@@ -13,7 +13,7 @@ public class HistoryEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/history");
+        var group = app.MapGroup("api/history").RequireAuthorization();
         group.MapGet("", GetHistory);
     }
 

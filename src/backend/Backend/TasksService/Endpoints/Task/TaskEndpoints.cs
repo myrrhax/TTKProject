@@ -25,7 +25,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        });
+        }).RequireAuthorization();
 
         app.MapPut("/tasks", async (UpdateTaskRequest request, UpdateTaskInteractor interactor) =>
         {
@@ -33,7 +33,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        });
+        }).RequireAuthorization();
 
         app.MapDelete("/tasks/{id:guid}", async (Guid id, DeleteTaskInteractor interactor) =>
         {
@@ -41,7 +41,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok()
                 : Results.BadRequest(result.Error.GetAll());
-        });
+        }).RequireAuthorization();
 
         app.MapPatch("/tasks/status", async (ChangeTaskStatusRequest request, ChangeTaskStatusInteractor interactor) =>
         {
@@ -49,7 +49,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        });
+        }).RequireAuthorization();
 
         app.MapGet("/tasks/status/{status}", async (string status, GetTasksByStatusInteractor interactor) =>
         {
@@ -57,7 +57,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        });
+        }).RequireAuthorization();
 
         app.MapGet("/tasks/priority/{priority}", async (TaskPriority priority, ApplicationContext db) =>
         {
@@ -66,6 +66,6 @@ public class TaskEndpoints : ICarterModule
                 .ToListAsync();
 
             return Results.Ok(tasks);
-        });
+        }).RequireAuthorization();
     }
 }

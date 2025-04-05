@@ -17,7 +17,7 @@ public class PostsEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/posts");
+        var group = app.MapGroup("api/posts").RequireAuthorization();
 
         group.MapGet("/{id:guid}", GetPostById)
             .WithOpenApi();

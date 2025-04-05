@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // обязательно
 
+builder.Services.AddJwtAuthentication(builder.Configuration);
 // EF Core
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
