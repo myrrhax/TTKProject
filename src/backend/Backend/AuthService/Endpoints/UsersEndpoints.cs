@@ -1,12 +1,14 @@
 ﻿using AuthService.Contracts;
 using AuthService.Contracts.ChangePassword;
 using AuthService.Contracts.ChangeRole;
+using AuthService.Contracts.EditUser;
 using AuthService.Contracts.GetUsers;
 using AuthService.Entities;
 using AuthService.Interactors;
 using AuthService.Interactors.ChangePassword;
 using AuthService.Interactors.ChangeRole;
 using AuthService.Interactors.DeleteUser;
+using AuthService.Interactors.EditUser;
 using AuthService.Interactors.GetUsers;
 using AuthService.Utils;
 using Carter;
@@ -31,6 +33,23 @@ public class UsersEndpoints : ICarterModule
 
         group.MapPatch("/change-role", ChangeRole)
             .WithOpenApi();
+
+        group.MapPut("", UpdateUser)
+            .WithOpenApi();
+    }
+
+    public async Task<Results<Ok, BadRequest<ErrorsContainer>>> UpdateUser(IBaseInteractor<EditUserParams, bool> interactor, 
+        EditUserRequest req)
+    {
+        var param = new EditUserParams(req.UserId, req.Login, req.Name, req.Surname, req.SecondName);
+
+        var result = await interactor.ExecuteAsync(param);
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok();
+        }
+        return TypedResults.BadRequest(result.Error);
     }
 
     public async Task<Results<Ok<GetUsersResponse>, NotFound>> GetUsers(IBaseInteractor<GetUsersParams, GetUsersResult> interactor,
