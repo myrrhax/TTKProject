@@ -2,6 +2,7 @@
 using AuthService.Contracts.GetUsers;
 using AuthService.Entities;
 using AuthService.Interactors;
+using AuthService.Interactors.DeleteUser;
 using AuthService.Interactors.GetUsers;
 using AuthService.Utils;
 using Carter;
@@ -14,7 +15,11 @@ public class UsersEndpoints : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("api/users");
+        
         group.MapGet("", GetUsers)
+            .WithOpenApi();
+
+        group.MapDelete("/{id:guid}", DeleteUser)
             .WithOpenApi();
     }
 
@@ -60,6 +65,19 @@ public class UsersEndpoints : ICarterModule
         }
 
         return TypedResults.NotFound();
+    }
+
+    public async Task<Results<Ok, BadRequest<ErrorsContainer>>> DeleteUser(Guid id, 
+        IBaseInteractor<DeleteUserParams, bool> interactor)
+    {
+        var param = new DeleteUserParams(id);
+        var result = await interactor.ExecuteAsync(param);
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok();
+        }
+        return TypedResults.BadRequest(result.Error);
     }
 
     private static SortOptions GetSortOptions(string? filterName)

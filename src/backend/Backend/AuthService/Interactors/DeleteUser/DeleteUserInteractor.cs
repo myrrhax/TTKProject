@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Interactors.DeleteUser;
 
-public class DeleteUserInteractor(ApplicationContext context) : IBaseInteractor<Guid, bool>
+public class DeleteUserInteractor(ApplicationContext context) : IBaseInteractor<DeleteUserParams, bool>
 {
-    public async Task<Result<bool, ErrorsContainer>> ExecuteAsync(Guid param)
+    public async Task<Result<bool, ErrorsContainer>> ExecuteAsync(DeleteUserParams param)
     {
         var user = await context.Users
-            .FindAsync(param);
+            .FindAsync(param.Id);
         var errors = new ErrorsContainer();
 
         if (user is null || user.IsDeleted)
@@ -24,7 +24,7 @@ public class DeleteUserInteractor(ApplicationContext context) : IBaseInteractor<
         {
             user.IsDeleted = true;
             await context.RefreshTokens
-                .Where(r => r.UserId == param)
+                .Where(r => r.UserId == param.Id)
                 .ExecuteDeleteAsync();
 
             await context.SaveChangesAsync();
