@@ -1,4 +1,5 @@
 using Carter;
+using InformationService.Background;
 using InformationService.Configuration;
 using InformationService.DataAccess;
 using InformationService.Entities;
@@ -34,6 +35,8 @@ builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Guid>, UpdatePostIn
 builder.Services.AddScoped<IBaseInteractor<RestorePostParams, bool>, RestorePostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<GetHistoryParams, IEnumerable<PostHistory>>, GetHistoryInteractor>();
 #endregion
+
+builder.Services.AddHostedService<DeleteOldPosts>();
 
 var app = builder.Build();
 
