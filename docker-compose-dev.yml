@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: tasks_db
     ports:
-      - "5433:5433"
+      - "5433:5432"
     volumes:
       - tasks_data:/var/lib/postgresql/data
 
@@ -36,12 +36,26 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: information_db
     ports:
-      - "5434:5434"
+      - "5434:5432"
     volumes:
       - info_data:/var/lib/postgresql/data
+
+  tasks_service:
+    build:
+      context: ./src/backend/Backend/TasksService
+      dockerfile: Dockerfile
+    container_name: tasks_service
+    ports:
+      - "5001:5001"	
+    depends_on:
+      - tasks_db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=tasks_db;Port=5432;Database=tasks_db;Username=postgres;Password=postgres
 
 volumes:
   auth_data:
   tasks_data:
   info_data:
   admin_data:
+
