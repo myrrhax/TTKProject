@@ -1,0 +1,9 @@
+/* Filename - App.css */
+/* It containds the Form and Page Styling*/
+@import "../Var.css";
+
+.loginWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
