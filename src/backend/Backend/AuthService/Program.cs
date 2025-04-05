@@ -14,12 +14,10 @@ using AuthService.Utils.JwtEncoder;
 using AuthService.Utils.PasswordHasher;
 using Carter;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 using WebAPI.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -31,7 +29,8 @@ builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
 builder.Services.AddCarter();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
-builder.Services.AddDocumentation();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 #region Interactors
 builder.Services.AddScoped<IBaseInteractor<RegisterParams, RegisterResult>, RegisterInteractor>();
@@ -48,17 +47,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(opt =>
-    {
-        opt.RouteTemplate = "openapi/{documentName}.json";
-    });
-
-    app.MapScalarApiReference(opt =>
-    {
-        opt.Title = "WebChatAPI";
-        opt.Theme = ScalarTheme.Mars;
-        opt.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
-    });
+    app.UseSwagger();
+    app.UseSwaggerUI(); // Не забудь эту строку!
 }
 
 app.UseHttpsRedirection();

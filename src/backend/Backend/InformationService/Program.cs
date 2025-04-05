@@ -18,8 +18,8 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthorization();
-builder.Services.AddDocumentation();
-builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -43,17 +43,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(opt =>
-    {
-        opt.RouteTemplate = "openapi/{documentName}.json";
-    });
-
-    app.MapScalarApiReference(opt =>
-    {
-        opt.Title = "WebChatAPI";
-        opt.Theme = ScalarTheme.Mars;
-        opt.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
-    });
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
