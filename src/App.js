@@ -1,22 +1,25 @@
-import React, { useState } from "react";
-import TaskModal from "./components/Modal/Modal"; // Убедись в правильном пути!
-import TaskPage from "./TaskPage/TaskPage";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header/Header";
+import LoginPage from "./LoginPage/LoginPage";
+import RegisterPage from "./RegisterPage/RegisterPage";
+import TaskPage from "./TaskPage/TaskPage";
+
 import "./App.css";
 
 function App() {
-  const [modalOpen, setModalOpen] = useState(false);
-
   return (
-    <div className="App">
-      <Header />
-      <div class="title-bar">
-        <h1>Задачи</h1>
-        <button onClick={() => setModalOpen(true)}>Создать задачу</button>
+    <Router>
+      <div className="App">
+        <Header />
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/tasks" element={<TaskPage />} />
+          
+        </Routes>
       </div>
-      <TaskModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-      <TaskPage />
-    </div>
+    </Router>
   );
 }
 

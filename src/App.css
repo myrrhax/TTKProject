@@ -1,6 +1,5 @@
 /* Filename - App.css */
 /* It containds the Form and Page Styling*/
-@import "./modern-normalize.css";
 @import "./Var.css";
 
 ::selection {
@@ -9,28 +8,5 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  padding-top: 50px;
-}
-.App {
-  background: #f3f3f3;
-  text-align: center;
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  padding: 10px 20px;
-  transition: transform 0.2s;
-  width: 100%;
-  height: fit-content;
-  text-align: center;
-  margin: auto;
-  margin-top: 20px;
-  grid-template-columns: repeat(12, 1fr);
-  display: grid;
-}
-.title-bar {
-  grid-column: 2/12;
-  display: flex;
-  justify-content: space-between;
-  height: fit-content;
+  font-family: "Inter", sans-serif;
 }
