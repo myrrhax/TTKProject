@@ -1,12 +1,22 @@
 :root {
   --color-primary: #12b066;
-  --color-secondary: #f0f0f0;
+  --color-primary-under: white;
+
+  --color-secondary: #7c3aed;
+
   --text-color: #333;
   --font-base: "Segoe UI", sans-serif;
+  --font-size-base: 14;
+
+  --font-size-big: 40;
 
   --input-border: #ccc;
   --input-focus: #888;
 
   --radius: 4px;
+
+  --radius-round: 10px;
   --transition: 0.2s ease-in-out;
+
+  --gray-element: #e2e2e2;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import "./TaskCard.css";
-import { Clock } from "lucide-react";
+import { Pencil } from "lucide-react";
 
 const TaskCard = () => {
   return (
@@ -8,11 +8,18 @@ const TaskCard = () => {
       <div className="task-card-header">
         <div>
           <h3 className="task-title">Set Up Backend Infrastructure</h3>
+          <div className="task-dates">
+            <span className="dead-date">
+              <span>06.08.25</span>
+              <span className="task-deadline">15.08.25</span>
+            </span>
+            <span className="task-priority">Высокий</span>
+          </div>
           <p className="task-description">
             Prepare the server environment and database for app development.
           </p>
         </div>
-        <Clock className="task-clock" />
+        <Pencil className="task-edit-icon" />
       </div>
 
       <div class="content-card">
@@ -31,16 +38,10 @@ const TaskCard = () => {
           </div>
           <div className="task-actions">
             <button className="task-button">Выполнить</button>
-            <span className="task-status">В работу</span>
+            <button className="task-status">В работу</button>
           </div>
         </div>
-        <div class="info_side">
-          <div className="task-priority">Высокий</div>
-          <div className="task-dates">
-            <span>06.08.25</span>
-            <span className="task-deadline">15.08.25</span>
-          </div>
-        </div>
+        <div class="info_side"></div>
       </div>
     </div>
   );
