@@ -4,6 +4,7 @@ using TasksService.Contracts.Task;
 using TasksService.DataAccess;
 using TasksService.Entities;
 using TasksService.Utils;
+using TaskStatusEnum = TasksService.Entities.TaskStatus;
 
 namespace TasksService.Interactors.Task.Update;
 
@@ -24,6 +25,7 @@ public class UpdateTaskInteractor(ApplicationContext context, TaskHistoryLogger 
         task.Description = param.Description;
         task.DueDate = param.DueDate;
         task.Priority = Enum.Parse<TaskPriority>(param.Priority, true);
+        task.Status = Enum.Parse<TaskStatusEnum>(param.Status, true);
         task.AssignedUserId = param.AssignedUserId;
 
         await context.SaveChangesAsync();
