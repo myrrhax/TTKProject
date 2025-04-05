@@ -9,13 +9,13 @@ function WelcomePage() {
         <h1>Добро пожаловать!</h1>
         <h2>Офисный Веб-Органайзер</h2>
       </div>
-      <div className="divider divider-firstr"></div>
-      <div className="divider divider-second"></div>
-      <div className="button-group">
-        <Link to="/login" className="button">
+      <div className="welcome-divider divider-firstr"></div>
+      <div className="welcome-divider divider-second"></div>
+      <div className="welcome-button-group">
+        <Link to="/login" className="welcome-button">
           Войти
         </Link>
-        <Link to="/register" className="button">
+        <Link to="/register" className="welcome-button">
           Зарегистрироваться
         </Link>
       </div>
