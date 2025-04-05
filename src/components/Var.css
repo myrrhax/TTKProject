@@ -1,0 +1,12 @@
+:root {
+  --color-primary: #12b066;
+  --color-secondary: #f0f0f0;
+  --text-color: #333;
+  --font-base: "Segoe UI", sans-serif;
+
+  --input-border: #ccc;
+  --input-focus: #888;
+
+  --radius: 4px;
+  --transition: 0.2s ease-in-out;
+}

@@ -1,0 +1,9 @@
+/* Filename - App.css */
+/* It containds the Form and Page Styling*/
+@import "./Var.css";
+
+.task-component {
+  grid-column: 2/12;
+  display: flex;
+  justify-content: space-between;
+}
