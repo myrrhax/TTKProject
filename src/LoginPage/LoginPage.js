@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./LoginPage.css";
 import AuthForm from "../components/AuthForm/AuthForm";
 
 function LoginPage() {
   return (
-    <div className="loginWrap">
-      <AuthForm />
+    <div class="loginWrap">
+      <AuthForm/>
     </div>
   );
 }
