@@ -1,49 +1,63 @@
+using Carter;
+using InformationService.Background;
+using InformationService.Configuration;
+using InformationService.DataAccess;
+using InformationService.Entities;
+using InformationService.Interactors;
+using InformationService.Interactors.CreatePost;
+using InformationService.Interactors.DeletePost;
+using InformationService.Interactors.GetHistory;
+using InformationService.Interactors.GetPost;
+using InformationService.Interactors.GetPosts;
+using InformationService.Interactors.RestorePost;
+using InformationService.Interactors.UpdatePost;
+using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
-namespace InformationService;
 
-public class Program
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthorization();
+builder.Services.AddDocumentation();
+builder.Services.AddOpenApi();
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    public static void Main(string[] args)
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+#region Interactors
+builder.Services.AddScoped<IBaseInteractor<CreatePostParams, Post>, CreatePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<DeletePostParams, Guid>, DeletePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<Guid, Post>, GetPostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<GetPostsParams, GetPostsResult>, GetPostsInteractor>();
+builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Guid>, UpdatePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<GetHistoryParams, IEnumerable<PostHistory>>, GetHistoryInteractor>();
+builder.Services.AddScoped<IBaseInteractor<RestorePostParams, bool>, RestorePostInteractor>();
+#endregion
+
+builder.Services.AddCarter();
+builder.Services.AddHostedService<DeleteOldPosts>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger(opt =>
     {
-        var builder = WebApplication.CreateBuilder(args);
+        opt.RouteTemplate = "openapi/{documentName}.json";
+    });
 
-        // Add services to the container.
-        builder.Services.AddAuthorization();
-
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
-
-        var app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-        {
-            var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                {
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    TemperatureC = Random.Shared.Next(-20, 55),
-                    Summary = summaries[Random.Shared.Next(summaries.Length)]
-                })
-                .ToArray();
-            return forecast;
-        })
-        .WithName("GetWeatherForecast");
-
-        app.Run();
-    }
+    app.MapScalarApiReference(opt =>
+    {
+        opt.Title = "WebChatAPI";
+        opt.Theme = ScalarTheme.Mars;
+        opt.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
+    });
 }
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+
+app.MapCarter();
+app.Run();
