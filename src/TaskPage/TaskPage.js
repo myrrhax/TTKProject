@@ -11,9 +11,11 @@ function TaskPage() {
       </div>
       <div className="task-folder">
         <h2>Задачи в работе</h2>
+        <TaskCard />
       </div>
       <div className="task-folder">
         <h2>Выполненные задачи</h2>
+        <TaskCard />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import Header from "./components/Header/Header";
 import AdminPage from "./AdminPage/AdminPage";
 import ReaderPage from "./ReaderPage/Reader";
 import ArticleCard from "./components/Articles/ArticleCard";
+import ArticlesPage from "./ArticlesPage/ArticlesPage";
 import "./App.css";
 
 function App() {
@@ -15,12 +16,7 @@ function App() {
       <Header />
       <TaskModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       {/* <TaskPage /> */}
-      <ArticleCard
-        title="Название"
-        date="01.01.2025"
-        author="Имя Фамилия Отчество"
-        imageUrl="images/wb_5949216_5.jpg"
-      />
+      <ArticlesPage />
     </div>
   );
 }

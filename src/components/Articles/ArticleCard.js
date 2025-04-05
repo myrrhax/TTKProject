@@ -1,5 +1,6 @@
 import React from "react";
 import "./ArticleCard.css";
+import { Ellipsis } from "lucide-react";
 
 const ArticleCard = ({ title, date, author, imageUrl }) => {
   return (
@@ -8,7 +9,9 @@ const ArticleCard = ({ title, date, author, imageUrl }) => {
         className="article-card__image"
         style={{ backgroundImage: `url(${imageUrl})` }}
       >
-        <div className="article-card__logo">GЭП</div>
+        <div className="article-card__logo">
+          <Ellipsis />
+        </div>
       </div>
       <div className="article-card__content">
         <h2 className="article-card__title">{title}</h2>
