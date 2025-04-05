@@ -1,6 +1,7 @@
 using AuthService.Configuration;
 using AuthService.DataAccess;
 using AuthService.Interactors;
+using AuthService.Interactors.ChangePassword;
 using AuthService.Interactors.DeleteUser;
 using AuthService.Interactors.GetUsers;
 using AuthService.Interactors.Login;
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IBaseInteractor<LoginParams, LoginResult>, LoginInter
 builder.Services.AddScoped<IBaseInteractor<RefreshTokenParam, RefreshTokenResult>, RefreshTokenInteractor>();
 builder.Services.AddScoped<IBaseInteractor<GetUsersParams, GetUsersResult>, GetUsersListInteractor>();
 builder.Services.AddScoped<IBaseInteractor<DeleteUserParams, bool>, DeleteUserInteractor>();
+builder.Services.AddScoped<IBaseInteractor<ChangePasswordParams, bool>, ChangePasswordInteractor>();
 #endregion
 
 var app = builder.Build();

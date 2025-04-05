@@ -13,6 +13,11 @@ public class ErrorsContainer
     public ErrorsContainer(IEnumerable<FluentValidation.Results.ValidationFailure> failures)
         : this()
     {
+        AddValidationErrors(failures);
+    }
+
+    public void AddValidationErrors(IEnumerable<FluentValidation.Results.ValidationFailure> failures)
+    {
         foreach (var failure in failures)
         {
             AddError(failure.PropertyName, failure.ErrorMessage);

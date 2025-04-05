@@ -1,7 +1,9 @@
 ﻿using AuthService.Contracts;
+using AuthService.Contracts.ChangePassword;
 using AuthService.Contracts.GetUsers;
 using AuthService.Entities;
 using AuthService.Interactors;
+using AuthService.Interactors.ChangePassword;
 using AuthService.Interactors.DeleteUser;
 using AuthService.Interactors.GetUsers;
 using AuthService.Utils;
@@ -20,6 +22,9 @@ public class UsersEndpoints : ICarterModule
             .WithOpenApi();
 
         group.MapDelete("/{id:guid}", DeleteUser)
+            .WithOpenApi();
+
+        group.MapPatch("/change-password", ChangePassword)
             .WithOpenApi();
     }
 
@@ -65,6 +70,19 @@ public class UsersEndpoints : ICarterModule
         }
 
         return TypedResults.NotFound();
+    }
+
+    public async Task<Results<Ok, BadRequest<ErrorsContainer>>> ChangePassword(ChangePasswordRequest req,
+        IBaseInteractor<ChangePasswordParams, bool> interactor)
+    {
+        var param = new ChangePasswordParams(req.UserId, req.Password);
+        var result = await interactor.ExecuteAsync(param);
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok();
+        }
+        return TypedResults.BadRequest(result.Error);
     }
 
     public async Task<Results<Ok, BadRequest<ErrorsContainer>>> DeleteUser(Guid id, 
