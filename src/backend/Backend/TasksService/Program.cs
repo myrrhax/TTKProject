@@ -1,49 +1,47 @@
+using Microsoft.EntityFrameworkCore;
+using TasksService.DataAccess;
+using TasksService.Interactors.Task.Create;
+using TasksService.Interactors.Task.Update;
+using TasksService.Interactors.Task.Delete;
+using TasksService.Interactors.Task.ChangeStatus;
+using TasksService.Interactors.Task.GetByStatus;
+using TasksService.Interactors.History.GetAll;
+using TasksService.Utils;
+using Carter;
 
-namespace TasksService;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(); // обязательно
+
+// EF Core
+builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    public static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
-        // Add services to the container.
-        builder.Services.AddAuthorization();
+// Carter
+builder.Services.AddCarter();
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+// Интеракторы
+builder.Services.AddScoped<CreateTaskInteractor>();
+builder.Services.AddScoped<UpdateTaskInteractor>();
+builder.Services.AddScoped<DeleteTaskInteractor>();
+builder.Services.AddScoped<ChangeTaskStatusInteractor>();
+builder.Services.AddScoped<GetTasksByStatusInteractor>();
+builder.Services.AddScoped<GetTaskHistoryInteractor>();
+builder.Services.AddScoped<TaskHistoryLogger>();
 
-        var app = builder.Build();
+var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-        {
-            var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                {
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    TemperatureC = Random.Shared.Next(-20, 55),
-                    Summary = summaries[Random.Shared.Next(summaries.Length)]
-                })
-                .ToArray();
-            return forecast;
-        })
-        .WithName("GetWeatherForecast");
-
-        app.Run();
-    }
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(); // Не забудь эту строку!
 }
+
+// Маршруты
+app.MapCarter();
+
+app.Run();
