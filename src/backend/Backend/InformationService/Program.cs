@@ -11,6 +11,7 @@ using InformationService.Interactors.UpdatePost;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthorization();
@@ -27,7 +28,7 @@ builder.Services.AddCarter();
 builder.Services.AddScoped<IBaseInteractor<CreatePostParams, Post>, CreatePostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<DeletePostParams, Post>, DeletePostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<Guid, Post>, GetPostInteractor>();
-builder.Services.AddScoped<IBaseInteractor<GetPostsParams, IEnumerable<Post>>, GetPostsInteractor>();
+builder.Services.AddScoped<IBaseInteractor<GetPostsParams, GetPostsResult>, GetPostsInteractor>();
 builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Post>, UpdatePostInteractor>();
 #endregion
 

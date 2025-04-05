@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InformationService.Interactors.GetPosts;
 
-public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Post>>
+public class GetPostsInteractor : IBaseInteractor<GetPostsParams, GetPostsResult>
 {
-    public const int PAGE_SIZE = 25;
+    public const int PAGE_SIZE = 10;
     private readonly ApplicationContext _context;
 
     public GetPostsInteractor(ApplicationContext context)
@@ -16,16 +16,17 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Po
         _context = context;
     }
 
-    public async Task<Result<IEnumerable<Post>, ErrorsContainer>> ExecuteAsync(GetPostsParams param)
+    public async Task<Result<GetPostsResult, ErrorsContainer>> ExecuteAsync(GetPostsParams param)
     {
         var query = _context.Posts
             .AsNoTracking()
             .Include(p => p.History)
             .AsQueryable();
-        if (param.Query != string.Empty)
+
+        if (!string.IsNullOrWhiteSpace(param.Query))
         {
             query = query.Where(p => EF.Functions.ILike(p.Title, $"%{param.Query}%")
-                || p.Content.Contains(param.Query) 
+                || p.Content.Contains(param.Query)
                 || EF.Functions.ILike(p.PostId.ToString(), $"%{param.Query}%"));
         }
 
@@ -41,17 +42,30 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Po
             query = query.OrderBy(p => p.History.Last().UpdateTime);
         }
 
+        var totalPostsCount = await query.CountAsync();
+        var maxPages = (int)Math.Ceiling(totalPostsCount / (double)PAGE_SIZE);
+
         var posts = await query.Skip(PAGE_SIZE * (param.Page - 1))
             .Take(PAGE_SIZE)
             .ToListAsync();
-        
+
         if (!posts.Any())
         {
             var errors = new ErrorsContainer();
             errors.AddError("Posts", "Посты не найдены");
-            return Result.Failure<IEnumerable<Post>, ErrorsContainer>(errors);
+            return Result.Failure<GetPostsResult, ErrorsContainer>(errors);
         }
 
-        return Result.Success<IEnumerable<Post>, ErrorsContainer>(posts);
+        return Result.Success<GetPostsResult, ErrorsContainer>(new GetPostsResult
+        {
+            Posts = posts,
+            MaxPages = maxPages
+        });
     }
+}
+
+public class GetPostsResult
+{
+    public IEnumerable<Post> Posts { get; set; } = new List<Post>();
+    public int MaxPages { get; set; }
 }

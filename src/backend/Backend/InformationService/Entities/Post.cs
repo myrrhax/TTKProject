@@ -20,6 +20,14 @@ public class Post
         {
             dtos.Add(postHistory);
         }
-        return new PostDto(post.PostId, post.Title, post.Content, post.CreationTime, post.ImageId, post.CreatorId, dtos);
+        return new PostDto(
+            post.PostId,
+            post.Title,
+            post.Content,
+            post.CreationTime,   
+            post.ImageId,
+            post.CreatorId,      
+            post.History.Select(h => (HistoryDto)h).ToList()
+        );
     }
 }
