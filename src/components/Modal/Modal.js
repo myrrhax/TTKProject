@@ -1,6 +1,6 @@
 import React from "react";
 import "./Modal.css";
-import TaskForm from "./TaskForm";
+import TaskForm from "../TaskForm";
 
 function Modal({ isOpen, onClose }) {
   if (!isOpen) return null;

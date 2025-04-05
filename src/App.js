@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import TaskModal from "./components/Modal"; // Убедись в правильном пути!
-import TaskPage from "./components/TaskPage";
-import Header from "./components/Header";
+import TaskModal from "./components/Modal/Modal"; // Убедись в правильном пути!
+import TaskPage from "./components/TaskPage/TaskPage";
+import Header from "./components/Header/Header";
 import "./App.css";
 
 function App() {
