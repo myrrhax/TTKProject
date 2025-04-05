@@ -17,9 +17,7 @@ public class UpdatePostParamsValidator : AbstractValidator<UpdatePostParams>
             .WithMessage("Превышен размер статьи");
 
         RuleFor(p => p.NewImageId)
-            .NotEmpty()
-            .Must(p => Guid.TryParse(p, out _))
-            .When(p => p.NewImageId != null)
+            .Must(g => g == null || g != Guid.Empty)
             .WithMessage("Неправильный идентификатор картинки");
     }
 }

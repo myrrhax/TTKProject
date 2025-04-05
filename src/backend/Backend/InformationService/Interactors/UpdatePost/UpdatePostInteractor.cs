@@ -50,9 +50,9 @@ public class UpdatePostInteractor : IBaseInteractor<UpdatePostParams, Guid>
         
         entity.Title = param.NewTitle ?? entity.Title;
         entity.Content = param.NewContent ?? entity.Content;
-        if (param.NewImageId != null)
+        if (param.NewImageId.HasValue)
         {
-            entity.ImageId = Guid.Parse(param.NewImageId);
+            entity.ImageId = param.NewImageId.Value;
         }
         entity.History.Add(newHistory);
 
