@@ -1,22 +1,36 @@
 .header {
-  width: 100%;
-  background-color: #f3f3f3;
-  padding: 10px 20px;
+  background-color: #ffffff;
+  padding: 0 20px;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: 1fr auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
+  height: 58px;
 }
 
 .head {
-  grid-column: 2 / 12;
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
+  gap: var(--spacing-unit, 16px);
+  width: 100%;
+}
+
+.logo {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.icons-user-wrap {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-unit);
 }
 
 .header-icons {
@@ -25,11 +39,37 @@
   margin-right: 20px;
 }
 
+.icon-with-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #555;
+  transition: all 0.2s;
+}
+
+.icon-with-text.active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background-color: #f0f0f0;
+}
+
+.icon-with-text:hover,
+.icon-with-text:focus-visible {
+  background-color: #f8f8f8;
+}
+
+.icon-with-text:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
 .icon {
   width: 20px;
   height: 20px;
-  color: #555;
-  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .user-dropdown {
@@ -39,17 +79,24 @@
 }
 
 .avatar {
+  aspect-ratio: 1/1;
   width: 32px;
-  height: 32px;
-  border-radius: 50%;
   object-fit: cover;
+  border-radius: 50%;
 }
 
 .user-select {
-  border: none;
+  appearance: none;
+  padding: 4px 8px;
+  border-radius: 4px;
   background: transparent;
-  font-weight: 500;
-  font-size: 14px;
+  border: 1px solid transparent;
+  font: inherit;
   color: #333;
   cursor: pointer;
+}
+
+.user-select:focus {
+  border-color: var(--color-primary);
+  outline: none;
 }
