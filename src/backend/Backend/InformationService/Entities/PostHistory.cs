@@ -23,11 +23,14 @@ public class PostHistory
             case EditType.Edited:
                 editTypeStr = "Изменение";
                 break;
+            case EditType.Restored:
+                editTypeStr = "Восстановление";
+                break;
             default:
                 editTypeStr = "Удаление";
                 break;
         }
-        return new HistoryDto(postHistory.PostId,
+        return new HistoryDto(postHistory.PostId.ToString(),
             postHistory.Title,
             postHistory.RedactorId,
             editTypeStr,
@@ -37,5 +40,5 @@ public class PostHistory
 
 public enum EditType
 {
-    Created, Edited, Deleted
+    Created, Edited, Deleted, Restored
 }

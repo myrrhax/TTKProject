@@ -7,6 +7,7 @@ using InformationService.Interactors.CreatePost;
 using InformationService.Interactors.DeletePost;
 using InformationService.Interactors.GetPost;
 using InformationService.Interactors.GetPosts;
+using InformationService.Interactors.RestorePost;
 using InformationService.Interactors.UpdatePost;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -25,10 +26,11 @@ builder.Services.AddCarter();
 
 #region Interactors
 builder.Services.AddScoped<IBaseInteractor<CreatePostParams, Post>, CreatePostInteractor>();
-builder.Services.AddScoped<IBaseInteractor<DeletePostParams, Post>, DeletePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<DeletePostParams, Guid>, DeletePostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<Guid, Post>, GetPostInteractor>();
 builder.Services.AddScoped<IBaseInteractor<GetPostsParams, IEnumerable<Post>>, GetPostsInteractor>();
-builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Post>, UpdatePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Guid>, UpdatePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<RestorePostParams, bool>, RestorePostInteractor>();
 #endregion
 
 var app = builder.Build();

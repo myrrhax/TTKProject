@@ -12,7 +12,7 @@ public class GetPostInteractor(ApplicationContext context) : IBaseInteractor<Gui
     {
         var entity = await context.Posts
             .AsNoTracking()
-            .Include(p => p.History)
+            .Include(p => p.History.OrderByDescending(ph => ph.UpdateTime))
             .FirstOrDefaultAsync(p => p.PostId == param);
 
         if (entity is null)

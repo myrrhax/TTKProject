@@ -20,8 +20,12 @@ public class GetPostsInteractor : IBaseInteractor<GetPostsParams, IEnumerable<Po
     {
         var query = _context.Posts
             .AsNoTracking()
-            .Include(p => p.History)
+            .Include(p => p.History.OrderByDescending(ph => ph.UpdateTime))
+            .Where(p => p.History
+                .OrderByDescending(ph => ph.UpdateTime)
+                .First().EditType != EditType.Deleted)
             .AsQueryable();
+
         if (param.Query != string.Empty)
         {
             query = query.Where(p => EF.Functions.ILike(p.Title, $"%{param.Query}%")

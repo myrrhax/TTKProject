@@ -2,22 +2,28 @@
 using InformationService.DataAccess;
 using InformationService.Entities;
 using InformationService.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace InformationService.Interactors.DeletePost;
 
-public class DeletePostInteractor(ApplicationContext context) : IBaseInteractor<DeletePostParams, Post>
+public class DeletePostInteractor(ApplicationContext context) : IBaseInteractor<DeletePostParams, Guid>
 {
-    public async Task<Result<Post, ErrorsContainer>> ExecuteAsync(DeletePostParams param)
+    public async Task<Result<Guid, ErrorsContainer>> ExecuteAsync(DeletePostParams param)
     {
-        var entity = await context.FindAsync<Post>(param.PostId);
+        var entity = await context
+            .Posts
+            .Include(p => p.History.OrderBy(ph => ph.UpdateTime))
+            .FirstOrDefaultAsync(p => p.PostId == param.PostId);
 
-        if (entity is null)
+        var errors = new ErrorsContainer();
+        if (entity is null ||
+            entity.History.LastOrDefault()?.EditType == EditType.Deleted)
         {
-            var errors = new ErrorsContainer();
             errors.AddError("PostId", "Статья не найдена");
 
-            return Result.Failure<Post, ErrorsContainer>(errors);
+            return Result.Failure<Guid, ErrorsContainer>(errors);
         }
+
         var history = new PostHistory
         {
             PostId = entity.PostId,
@@ -31,13 +37,12 @@ public class DeletePostInteractor(ApplicationContext context) : IBaseInteractor<
         try
         {
             await context.SaveChangesAsync();
-            return Result.Success<Post, ErrorsContainer>(entity);
+            return Result.Success<Guid, ErrorsContainer>(entity.PostId);
         }
         catch (Exception)
         {
-            var errors = new ErrorsContainer();
             errors.AddError("PostId", "Не удалось удалить пост");
-            return Result.Failure<Post, ErrorsContainer>(errors);
+            return Result.Failure<Guid, ErrorsContainer>(errors);
         }
     }
 }

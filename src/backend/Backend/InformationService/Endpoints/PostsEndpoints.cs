@@ -3,7 +3,10 @@ using InformationService.Contracts;
 using InformationService.Entities;
 using InformationService.Interactors;
 using InformationService.Interactors.CreatePost;
+using InformationService.Interactors.DeletePost;
 using InformationService.Interactors.GetPosts;
+using InformationService.Interactors.RestorePost;
+using InformationService.Interactors.UpdatePost;
 using InformationService.Utils;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +23,12 @@ public class PostsEndpoints : ICarterModule
         group.MapGet("", GetPosts)
             .WithOpenApi();
         group.MapPost("", AddPost)
+            .WithOpenApi();
+        group.MapPut("/{id:guid}", UpdatePost)
+            .WithOpenApi();
+        group.MapDelete("/{id:guid}", DeletePost)
+            .WithOpenApi();
+        group.MapPost("/restore", RestorePost)
             .WithOpenApi();
     }
 
@@ -57,6 +66,51 @@ public class PostsEndpoints : ICarterModule
         }
 
         return TypedResults.NotFound();
+    }
+
+    public async Task<Results<Ok, NotFound>> DeletePost(Guid id, IBaseInteractor<DeletePostParams, Guid> interactor)
+    {
+        var userId = Guid.NewGuid(); // ToDo change to real user
+        var result = await interactor.ExecuteAsync(new DeletePostParams(id, userId));
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok();
+        }
+        return TypedResults.NotFound();
+    }
+
+    public async Task<Results<Ok, NotFound>> RestorePost([FromBody] RestorePostDto dto, IBaseInteractor<RestorePostParams, bool> interactor)
+    {
+        if (!Guid.TryParse(dto.PostId, out Guid id))
+        {
+            return TypedResults.NotFound();
+        }
+        var userId = Guid.NewGuid(); // ToDo change to real user
+        var result = await interactor.ExecuteAsync(new RestorePostParams(id, userId));
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok();
+        }
+        return TypedResults.NotFound();
+    }
+
+    public async Task<Results<Ok<Guid>, BadRequest<ErrorsContainer>>> UpdatePost(Guid id,
+        [FromBody] UpdatePostDto dto,
+        IBaseInteractor<UpdatePostParams, Guid> interactor)
+    {
+        
+        Guid userId = Guid.NewGuid(); // ToDo change to real user
+        var param = new UpdatePostParams(id, userId, dto.Title, dto.Content, dto.ImageId);
+
+        var result = await interactor.ExecuteAsync(param);
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok(result.Value);
+        }
+
+        return TypedResults.BadRequest(result.Error);
     }
 
     public async Task<Results<Created, BadRequest<ErrorsContainer>>> AddPost(IBaseInteractor<CreatePostParams, Post> interactor,

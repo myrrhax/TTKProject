@@ -1,6 +1,6 @@
 ﻿namespace InformationService.Contracts;
 
-public record PostDto(Guid PostId, 
+public record PostDto(string PostId, 
     string Title, 
     string Content, 
     DateTime CreationDate, 
