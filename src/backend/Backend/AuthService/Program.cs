@@ -1,6 +1,7 @@
 using AuthService.Configuration;
 using AuthService.DataAccess;
 using AuthService.Interactors;
+using AuthService.Interactors.GetUsers;
 using AuthService.Interactors.Login;
 using AuthService.Interactors.RefreshToken;
 using AuthService.Interactors.Register;
@@ -32,6 +33,7 @@ builder.Services.AddDocumentation();
 builder.Services.AddScoped<IBaseInteractor<RegisterParams, RegisterResult>, RegisterInteractor>();
 builder.Services.AddScoped<IBaseInteractor<LoginParams, LoginResult>, LoginInteractor>();
 builder.Services.AddScoped<IBaseInteractor<RefreshTokenParam, RefreshTokenResult>, RefreshTokenInteractor>();
+builder.Services.AddScoped<IBaseInteractor<GetUsersParams, GetUsersResult>, GetUsersListInteractor>();
 #endregion
 
 var app = builder.Build();

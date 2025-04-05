@@ -1,4 +1,6 @@
-﻿namespace AuthService.Entities;
+﻿using AuthService.Contracts;
+
+namespace AuthService.Entities;
 
 public class ApplicationUser
 {
@@ -11,4 +13,29 @@ public class ApplicationUser
     public Role Role { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     public bool IsDeleted { get; set; } = false;
+
+    public static implicit operator UserDto(ApplicationUser user)
+    {
+        string roleStr;
+        
+        switch(user.Role)
+        {
+            case Role.Admin:
+                roleStr = "Админ";
+                break;
+            default:
+                roleStr = "Пользователь";
+                break;
+        }
+
+        return new UserDto
+        {
+            UserId = user.UserId,
+            Login = user.Login,
+            FullName = $"{user.Surname} {user.Name} {user.SecondName}",
+            CreationDate = user.CreationDate,
+            IsDeleted = user.IsDeleted,
+            Role = roleStr,
+        };
+    }
 }
