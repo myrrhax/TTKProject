@@ -23,7 +23,8 @@ public class UsersEndpoints : ICarterModule
         string? sortByLogin = null,
         string? sortByFullname = null,
         string? sortByRole = null,
-        string? sortByRegistrationDate = null)
+        string? sortByRegistrationDate = null,
+        string query = "")
     {
         var loginSort = GetSortOptions(sortByLogin);
         var nameSort = GetSortOptions(sortByFullname);
@@ -43,7 +44,7 @@ public class UsersEndpoints : ICarterModule
                 break;
         }
 
-        var param = new GetUsersParams(page, loginSort, nameSort, sortRole, dateSort);
+        var param = new GetUsersParams(page, loginSort, nameSort, sortRole, dateSort, query);
         var result = await interactor.ExecuteAsync(param);
 
         if (result.IsSuccess)

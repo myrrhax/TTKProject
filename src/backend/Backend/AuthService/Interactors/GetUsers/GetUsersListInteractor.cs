@@ -46,6 +46,15 @@ public class GetUsersListInteractor(ApplicationContext context) : IBaseInteracto
             query = query.Where(p => p.Role == filter.SortByRole);
         }
 
+        if (filter.Query != string.Empty)
+        {
+            string queryLower = filter.Query.ToLower();
+            query = query.Where(p => p.Name.ToLower().Contains(queryLower)
+                || p.Login.ToLower().Contains(queryLower)
+                || p.UserId.ToString().ToLower().Contains(queryLower)
+                || (p.Name + " " + p.Surname + " " + p.SecondName).ToLower().Contains(queryLower));
+        }
+
         IOrderedQueryable<ApplicationUser>? resultQuery = null;
 
         if (filter.SortByFullname != SortOptions.NONE)
