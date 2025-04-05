@@ -8,6 +8,10 @@ using TasksService.Interactors.Task.Delete;
 using TasksService.Interactors.Task.GetByStatus;
 using TasksService.Interactors.Task.ChangeStatus;
 using TasksService.Utils;
+using TasksService.Entities;
+using TasksService.DataAccess;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace TasksService.Endpoints.Task;
 
@@ -53,6 +57,15 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
+        });
+
+        app.MapGet("/tasks/priority/{priority}", async (TaskPriority priority, ApplicationContext db) =>
+        {
+            var tasks = await db.Tasks
+                .Where(t => t.Priority == priority)
+                .ToListAsync();
+
+            return Results.Ok(tasks);
         });
     }
 }
