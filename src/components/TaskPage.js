@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./TaskPage.css";
-import TaskCard from "../TaskCard/TaskCard";
+import TaskCard from "./TaskCard";
 
 function TaskPage() {
   return (
