@@ -46,7 +46,6 @@ public class UploadImageInteractor
         return new ImageResponse
         {
             Id = image.Id,
-            FilePath = image.FilePath // <-- поправлено
         };
     }
 }

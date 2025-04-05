@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 // EF Core + PostgreSQL
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Images"));
 });
 
 // Carter
@@ -31,13 +31,25 @@ builder.Services.AddScoped<UploadImageInteractor>();
 builder.Services.AddScoped<GetImageByIdInteractor>();
 builder.Services.AddScoped<ImageValidator>();
 
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+}));
+
 var app = builder.Build();
 
 // Swagger UI
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI();
+
+if (app.Environment.IsProduction())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var context = app.Services.GetRequiredService<ApplicationContext>();
+    var migrations = await context.Database.GetPendingMigrationsAsync();
+    if (migrations.Any())
+    {
+        await context.Database.MigrateAsync();
+    }
 }
 
 app.UseRouting();
@@ -46,6 +58,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors("AllowAll");
 // Carter endpoints
 app.MapCarter();
 

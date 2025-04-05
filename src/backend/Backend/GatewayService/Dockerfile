@@ -1,29 +1,26 @@
-# См. статью по ссылке https://aka.ms/customizecontainer, чтобы узнать как настроить контейнер отладки и как Visual Studio использует этот Dockerfile для создания образов для ускорения отладки.
-
-# Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
+# Базовый образ
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
-# Этот этап используется для сборки проекта службы
+# Сборка
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["GatewayService/GatewayService.csproj", "GatewayService/"]
-RUN dotnet restore "./GatewayService/GatewayService.csproj"
-COPY . .
-WORKDIR "/src/GatewayService"
-RUN dotnet build "./GatewayService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+COPY ["src/backend/Backend/GatewayService/GatewayService.csproj", "GatewayService/"]
+RUN dotnet restore "GatewayService/GatewayService.csproj"
+COPY src/backend/Backend/GatewayService/ GatewayService/
+WORKDIR /src/GatewayService
+RUN dotnet build "GatewayService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
+# Публикация
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./GatewayService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "GatewayService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
+# Финальный контейнер
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

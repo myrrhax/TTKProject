@@ -28,7 +28,16 @@ public class RegisterInteractor : IBaseInteractor<RegisterParams, RegisterResult
         {
             errors.AddError("AvatarId", "Неверный формат идентификатора");
             return Result.Failure<RegisterResult, ErrorsContainer>(errors);
-        } 
+        }
+
+        var validator = new RegisterParamsValidation();
+        var validationResult = validator.Validate(param);
+
+        if (!validationResult.IsValid)
+        {
+            errors.AddValidationErrors(validationResult.Errors);
+            return Result.Failure<RegisterResult, ErrorsContainer>(errors);
+        }
 
         var entity = new ApplicationUser
         {

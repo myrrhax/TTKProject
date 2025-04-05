@@ -21,7 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Users"));
 });
 
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
@@ -43,15 +43,29 @@ builder.Services.AddScoped<IBaseInteractor<ChangeRoleParams, bool>, ChangeRoleIn
 builder.Services.AddScoped<IBaseInteractor<EditUserParams, bool>, EditUserInteractor>();
 #endregion
 
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+}));
+
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(); // Не забудь эту строку!
+
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Conn: " + builder.Configuration.GetConnectionString("Users"));
+if (app.Environment.IsProduction())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(); // Не забудь эту строку!
+    var context = app.Services.GetRequiredService<ApplicationContext>();
+    var migrations = await context.Database.GetPendingMigrationsAsync();
+    if (migrations.Any())
+    {
+        await context.Database.MigrateAsync();
+    }
 }
 
-app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.MapCarter();

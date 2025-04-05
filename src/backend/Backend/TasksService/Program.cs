@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen(); // обязательно
 // EF Core
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Tasks"));
 });
 
 // Carter
@@ -33,14 +33,27 @@ builder.Services.AddScoped<GetTasksByStatusInteractor>();
 builder.Services.AddScoped<GetTaskHistoryInteractor>();
 builder.Services.AddScoped<TaskHistoryLogger>();
 
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+}));
+
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(); // Не забудь эту строку!
+
+if (app.Environment.IsProduction())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(); // Не забудь эту строку!
+    var context = app.Services.GetRequiredService<ApplicationContext>();
+    var migrations = await context.Database.GetPendingMigrationsAsync();
+    if (migrations.Any())
+    {
+        await context.Database.MigrateAsync();
+    }
 }
 
+app.UseCors("AllowAll");
 // Маршруты
 app.MapCarter();
 
