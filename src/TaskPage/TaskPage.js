@@ -9,8 +9,12 @@ function TaskPage() {
         <h2>Отложенные задачи</h2>
         <TaskCard />
       </div>
-      <div className="task-folder">Задачи в работе</div>
-      <div className="task-folder">Выполеннные задачи</div>
+      <div className="task-folder">
+        <h2>Задачи в работе</h2>
+      </div>
+      <div className="task-folder">
+        <h2>Выполненные задачи</h2>
+      </div>
     </div>
   );
 }

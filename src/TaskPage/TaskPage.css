@@ -7,3 +7,9 @@
   display: flex;
   justify-content: space-between;
 }
+h2 {
+  font-size: var(--font-size-big);
+  text-align: start;
+  font-weight: 400;
+  color: var(--input-focus);
+}
