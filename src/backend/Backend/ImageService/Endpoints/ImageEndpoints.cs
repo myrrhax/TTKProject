@@ -28,9 +28,7 @@ public class ImageEndpoints : ICarterModule
         .Accepts<IFormFile>("multipart/form-data")
         .Produces<ImageResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization()
-        .WithOpenApi(); 
-
+        .RequireAuthorization() 
         .DisableAntiforgery();
 
         app.MapGet("/images/{id:guid}", async (Guid id, GetImageByIdInteractor interactor) =>

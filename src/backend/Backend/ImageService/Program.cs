@@ -3,7 +3,6 @@ using ImageService.DataAccess;
 using ImageService.Interactors.GetById;
 using ImageService.Interactors.Upload;
 using ImageService.Utils;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -57,6 +56,7 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Image Service v1");
     });
+}
 app.UseSwagger();
 app.UseSwaggerUI();
 
