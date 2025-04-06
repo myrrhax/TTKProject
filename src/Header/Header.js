@@ -1,52 +1,79 @@
 import React, { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./Header.css";
 import { Newspaper, CalendarCheck, Users } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
 
-const Header = () => {
-  const navigate = useNavigate();
-  const [userRole, setUserRole] = useState(null);
-
-  useEffect(() => {
-    const checkToken = () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          const decoded = jwtDecode(token);
-          setUserRole(decoded.role);
-        } catch (error) {
-          console.error("Invalid token");
-          setUserRole(null);
-        }
-      } else {
-        setUserRole(null);
-      }
-    };
-    checkToken();
-  }, []);
-
-  const handleLogout = (e) => {
-    if (e.target.value === "Выйти") {
-      localStorage.removeItem("token");
-      setUserRole(null);
-      navigate("/");
-    }
-  };
-
-  const commonNavItems = [
-    { to: "/articles", icon: <Newspaper />, text: "Полезная информация" },
-    { to: "/tasks", icon: <CalendarCheck />, text: "Задачи" },
-  ];
-
-  const adminNavItem = {
+const navItems = [
+  {
+    to: "/articles",
+    icon: <Newspaper />,
+    text: "Полезная информация",
+    requiresAuth: true,
+  },
+  {
+    to: "/tasks",
+    icon: <CalendarCheck />,
+    text: "Задачи",
+    requiresAuth: true,
+  },
+  {
     to: "/admin",
     icon: <Users />,
     text: "Администрирование",
+    requiresAuth: true,
+    requiredRole: "admin",
+  },
+];
+
+const Header = () => {
+  const [hasToken, setHasToken] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+  const [fullName, setFullName] = useState("ФИО");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        setHasToken(true);
+        const decoded = parseJwt(token);
+        setUserRole(decoded.role);
+        if (decoded.id) {
+          try {
+            const response = await fetch(
+              `http://localhost:5001/api/users/${decoded.id}`
+            );
+            const data = await response.json();
+            setFullName(data.fullName || "ФИО");
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+            setFullName("ФИО");
+          }
+        }
+      } else {
+        setHasToken(false);
+        setUserRole(null);
+      }
+    };
+    checkAuth();
+  }, [navigate]);
+
+  const parseJwt = (token) => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(atob(base64));
+    } catch (e) {
+      return {};
+    }
   };
 
-  const navItems =
-    userRole === "admin" ? [...commonNavItems, adminNavItem] : commonNavItems;
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setHasToken(false);
+    setUserRole(null);
+    navigate("/");
+  };
 
   return (
     <header className="header">
@@ -55,24 +82,38 @@ const Header = () => {
           <span className="logo">ОВО</span>
         </NavLink>
         <div className="icons-user-wrap">
-          <nav className="header-icons">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `icon-with-text ${isActive ? "active" : ""}`
-                }
+          {hasToken && (
+            <>
+              <nav className="header-icons">
+                {navItems
+                  .filter(
+                    (item) =>
+                      !item.requiresAuth ||
+                      (hasToken &&
+                        (!item.requiredRole || item.requiredRole === userRole))
+                  )
+                  .map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={({ isActive }) =>
+                        `icon-with-text ${isActive ? "active" : ""}`
+                      }
+                    >
+                      {React.cloneElement(item.icon, { className: "icon" })}
+                      <span className="icon-text">{item.text}</span>
+                    </NavLink>
+                  ))}
+              </nav>
+              <select
+                className="user-select"
+                onChange={(e) => e.target.value === "logout" && handleLogout()}
               >
-                {React.cloneElement(item.icon, { className: "icon" })}
-                <span className="icon-text">{item.text}</span>
-              </NavLink>
-            ))}
-          </nav>
-          <select className="user-select" onChange={handleLogout} value={""}>
-            <option>ФИО</option>
-            <option>Выйти</option>
-          </select>
+                <option>{fullName}</option>
+                <option value="logout">Выйти</option>
+              </select>
+            </>
+          )}
         </div>
       </div>
     </header>
