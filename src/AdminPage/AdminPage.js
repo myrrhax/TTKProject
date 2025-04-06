@@ -5,6 +5,7 @@ import { Trash } from "lucide-react";
 import { Key } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import protectedRequestFabric from "../requestFabric";
 
 const RoleDot = ({ color }) => <span className={`role-dot ${color}`} />;
 
@@ -34,10 +35,11 @@ export default function UserTable() {
       }
   
       try {
-        const response = await fetch("http://localhost:5001/api/users");
+        const response = await protectedRequestFabric("http://localhost:5001/api/users", "GET");
         if (response.ok) {
           const json = await response.json();
-          setUsers(json); // Не забудь обновить состояние!
+          console.log(json)
+          setUsers(json.users)
         }
       } catch (error) {
         console.error("Ошибка при загрузке пользователей:", error);
@@ -84,11 +86,19 @@ export default function UserTable() {
     return sortConfig.direction === "asc" ? " ↑" : " ↓";
   };
 
+  const deleteUser = async (userId) => {
+    const response = await protectedRequestFabric("http://localhost:5001/api/users/" + userId, 'DELETE')
+    if (response.ok) {
+      users.find(user => user.userId == userId).status = false;
+    }
+  }
+
   return (
     <div className="table-container">
       <table className="user-table">
         <thead>
           <tr>
+            <th>Id</th>
             <th>Логин</th>
             <th onClick={() => handleSort("name")} className="sortable">
               ФИО{getSortSymbol("name")}
@@ -99,21 +109,24 @@ export default function UserTable() {
             <th onClick={() => handleSort("date")} className="sortable">
               Дата регистрации{getSortSymbol("date")}
             </th>
+            <th>Статус</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {sortedUsers.map((user, index) => (
-            <tr key={user.id}>
+            <tr key={user.userId}>
               <td>{index + 1}</td>
-              <td>{user.name}</td>
+              <td>{user.login}</td>
+              <td>{user.fullName}</td>
               <td>
                 <div className="role-cell">
                   <RoleDot color={user.status} />
                   {user.role}
                 </div>
               </td>
-              <td>{user.date}</td>
+              <td>{user.creationDate}</td>
+              <td>{user.isDeleted ? "Удален" : "Существует"}</td>
               <td className="actions-cell">
                 <button title="Details">
                   <Key className="task-edit-icon" />
@@ -122,7 +135,7 @@ export default function UserTable() {
                   <Pencil className="task-edit-icon" />
                 </button>
                 <button title="Delete">
-                  <Trash className="task-edit-icon" />
+                <Trash className="task-edit-icon" onClick={() => deleteUser(user.userId)} />
                 </button>
               </td>
             </tr>
