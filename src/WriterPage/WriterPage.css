@@ -1,0 +1,33 @@
+/* Filename: LexicalEditor.css */
+
+.editor-container {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  min-height: 200px;
+  background: white;
+}
+
+.editor-input {
+  outline: none;
+  min-height: 150px;
+  font-size: 16px;
+}
+
+.editor-placeholder {
+  position: absolute;
+  color: #aaa;
+  pointer-events: none;
+}
+
+.bar-but {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  border: 1px solid var(--input-border);
+}
