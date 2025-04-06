@@ -13,11 +13,16 @@
   grid-template-columns: repeat(12, 1fr);
   display: grid;
 }
-
+button {
+  border: 0;
+  height: 40px;
+  border-radius: var(--radius);
+}
 .title-bar {
   grid-column: 2/12;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   height: fit-content;
 }
 
