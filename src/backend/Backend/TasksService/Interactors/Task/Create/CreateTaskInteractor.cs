@@ -8,9 +8,9 @@ using StatusEnum = TasksService.Entities.TaskStatus;
 namespace TasksService.Interactors.Task.Create;
 
 public class CreateTaskInteractor(ApplicationContext context, TaskHistoryLogger logger)
-    : IBaseInteractor<CreateTaskRequest, TaskResponse>
+    : IBaseInteractor<CreateTaskParam, TaskResponse>
 {
-    public async Task<Result<TaskResponse, ErrorsContainer>> ExecuteAsync(CreateTaskRequest param)
+    public async Task<Result<TaskResponse, ErrorsContainer>> ExecuteAsync(CreateTaskParam param)
     {
         try
         {
@@ -23,7 +23,7 @@ public class CreateTaskInteractor(ApplicationContext context, TaskHistoryLogger 
                 Priority = Enum.Parse<TaskPriority>(param.Priority, true),
                 Status = StatusEnum.Current, 
                 CreatedAt = DateTime.UtcNow,
-                AssignedUserId = param.AssignedUserId
+                AssignedUserId = param.Creator
             };
 
             await context.Tasks.AddAsync(entity);

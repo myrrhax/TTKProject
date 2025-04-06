@@ -20,9 +20,17 @@ public class TaskEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/tasks", async (CreateTaskRequest request, CreateTaskInteractor interactor) =>
+        app.MapPost("/tasks", async (CreateTaskRequest request, CreateTaskInteractor interactor, ClaimsPrincipal claims) =>
         {
-            var result = await interactor.ExecuteAsync(request);
+            var param = new CreateTaskParam
+            {
+                Title = request.Title,
+                Creator = GetUserId(claims),
+                Description = request.Description,
+                DueDate = request.DueDate,
+                Priority = request.Priority,
+            };
+            var result = await interactor.ExecuteAsync(param);
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
