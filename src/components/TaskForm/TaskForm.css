@@ -129,3 +129,8 @@ fieldset {
   cursor: pointer;
   border: 1px solid var(--input-border);
 }
+.priority-options {
+  display: flex;
+  flex-direction: row;
+  margin-block: 20px;
+}
