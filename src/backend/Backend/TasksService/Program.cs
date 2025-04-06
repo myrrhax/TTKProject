@@ -23,13 +23,13 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// ✅ Нужно даже если авторизация пока не используется (иначе Ocelot/FluentValidator могут выбрасывать исключение)
+
 builder.Services.AddAuthentication();
 
 // EF Core
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Tasks"));
 });
 
 // Carter
@@ -44,18 +44,36 @@ builder.Services.AddScoped<GetTasksByStatusInteractor>();
 builder.Services.AddScoped<GetTaskHistoryInteractor>();
 builder.Services.AddScoped<TaskHistoryLogger>();
 
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+}));
+
 var app = builder.Build();
 
-// Swagger UI
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+
+
+
+    if (app.Environment.IsProduction())
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TasksService API v1");
-    });
-}
+        var context = app.Services.GetRequiredService<ApplicationContext>();
+        var migrations = await context.Database.GetPendingMigrationsAsync();
+        if (migrations.Any())
+        {
+            await context.Database.MigrateAsync();
+        }
+    }
 
-app.MapCarter();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "TasksService API v1");
+        });
+    }
 
-app.Run();
+    app.UseCors("AllowAll");
+    app.MapCarter();
+    app.UseCors("AllowAll");
+    app.Run();
