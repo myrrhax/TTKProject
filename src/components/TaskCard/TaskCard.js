@@ -39,9 +39,11 @@ const TaskCard = () => {
             </div>
           </div>
           <div className="task-actions">
-            <button className="change-button">
-              <Pencil className="task-edit-icon" />
-            </button>
+            <a href="/change_task">
+              <button className="change-button">
+                <Pencil className="task-edit-icon" />
+              </button>
+            </a>
             <button className="task-button">Выполнить</button>
             <button className="task-status">В работу</button>
           </div>
