@@ -29,9 +29,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 // Carter (минималистичная маршрутизация)
 builder.Services.AddCarter();
 
-// Заглушка авторизации (Dummy)
-builder.Services.AddAuthentication("Dummy")
-    .AddScheme<AuthenticationSchemeOptions, DummyAuthHandler>("Dummy", null);
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
 // Интеракторы и утилиты
@@ -46,6 +44,8 @@ builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
 {
     policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 }));
+
+builder.Services.AddAuthentication();
 
 var app = builder.Build();
 

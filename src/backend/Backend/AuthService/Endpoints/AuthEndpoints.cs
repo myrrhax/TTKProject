@@ -85,7 +85,7 @@ public class AuthEndpoints : ICarterModule
         IBaseInteractor<RegisterParams, RegisterResult> interactor,
         IConfiguration configuration)
     {
-        var param = new RegisterParams(dto.Login, dto.Password, dto.Name, dto.Surname, dto.SecondName, dto.AvatarId);
+        var param = new RegisterParams(dto.Login, dto.Password, dto.Name, dto.Surname, dto.SecondName);
         var result = await interactor.ExecuteAsync(param);
 
         if (result.IsSuccess)

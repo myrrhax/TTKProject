@@ -26,6 +26,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddAuthentication();
 
+builder.Services.AddJwtAuthentication(builder.Configuration);
 // EF Core
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {

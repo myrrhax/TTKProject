@@ -23,19 +23,39 @@ public class UsersEndpoints : ICarterModule
         var group = app.MapGroup("api/users");
         
         group.MapGet("", GetUsers)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly");
+
+        group.MapGet("/{id:guid}", GetUserDetails)
+            .WithOpenApi()
+            .RequireAuthorization();
 
         group.MapDelete("/{id:guid}", DeleteUser)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly");
 
         group.MapPatch("/change-password", ChangePassword)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly"); ;
 
         group.MapPatch("/change-role", ChangeRole)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly"); ;
 
         group.MapPut("", UpdateUser)
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization("AdminOnly"); ;
+    }
+
+    public async Task<Results<Ok<UserDto>, NotFound>> GetUserDetails(Guid id, IBaseInteractor<Guid, ApplicationUser> interactor)
+    {
+        var result = await interactor.ExecuteAsync(id);
+        if (result.IsSuccess)
+        {
+            UserDto dto = result.Value;
+            return TypedResults.Ok(dto);
+        }
+        return TypedResults.NotFound();
     }
 
     public async Task<Results<Ok, BadRequest<ErrorsContainer>>> UpdateUser(IBaseInteractor<EditUserParams, bool> interactor, 

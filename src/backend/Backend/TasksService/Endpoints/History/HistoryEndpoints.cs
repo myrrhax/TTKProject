@@ -15,6 +15,6 @@ public class HistoryEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        });
+        }).RequireAuthorization();
     }
 }

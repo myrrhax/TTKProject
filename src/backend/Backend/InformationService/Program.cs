@@ -13,6 +13,9 @@ using InformationService.Interactors.GetPost;
 using InformationService.Interactors.GetPosts;
 using InformationService.Interactors.RestorePost;
 using InformationService.Interactors.UpdatePost;
+using InformationService.Utils;
+using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +51,8 @@ builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
 {
     policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 }));
+
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddCarter();
 builder.Services.AddHostedService<DeleteOldPosts>();

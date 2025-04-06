@@ -37,7 +37,6 @@ public class ApplicationUser
             CreationDate = user.CreationDate,
             IsDeleted = user.IsDeleted,
             Role = roleStr,
-            AvatarId = user.AvatarId,
         };
     }
 }

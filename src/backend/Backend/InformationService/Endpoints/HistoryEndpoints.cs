@@ -13,10 +13,8 @@ public class HistoryEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/history")
-                       .WithTags("History");
-
-        group.MapGet("", GetHistory).WithOpenApi();
+        var group = app.MapGroup("api/history").RequireAuthorization();
+        group.MapGet("", GetHistory);
     }
 
     public async Task<Results<Ok<List<HistoryDto>>, NotFound>> GetHistory(

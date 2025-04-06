@@ -10,6 +10,7 @@ using InformationService.Interactors.UpdatePost;
 using InformationService.Utils;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace InformationService.Endpoints;
 
@@ -17,8 +18,7 @@ public class PostsEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/posts")
-            .WithTags("Posts"); 
+        var group = app.MapGroup("api/posts").RequireAuthorization();
 
         group.MapGet("/{id:guid}", GetPostById).WithOpenApi();
         group.MapGet("", GetPosts).WithOpenApi();
@@ -30,9 +30,10 @@ public class PostsEndpoints : ICarterModule
 
     private async Task<Results<Ok, BadRequest<ErrorsContainer>>> UpdatePost(IBaseInteractor<UpdatePostParams, Guid> interactor,
         Guid id, 
-        [FromBody]UpdatePostDto dto)
+        [FromBody]UpdatePostDto dto,
+        ClaimsPrincipal claims)
     {
-        var userId = Guid.NewGuid();
+        var userId = GetUserId(claims);
         var param = new UpdatePostParams(id, userId, dto.Title, dto.Content, dto.ImageId);
         var result = await interactor.ExecuteAsync(param);
 
@@ -83,9 +84,9 @@ public class PostsEndpoints : ICarterModule
         return TypedResults.NotFound();
     }
 
-    public async Task<Results<Ok, NotFound>> DeletePost(Guid id, IBaseInteractor<DeletePostParams, Guid> interactor)
+    public async Task<Results<Ok, NotFound>> DeletePost(Guid id, IBaseInteractor<DeletePostParams, Guid> interactor, ClaimsPrincipal claims)
     {
-        var userId = Guid.NewGuid(); // ToDo change to real user
+        var userId = GetUserId(claims);
         var result = await interactor.ExecuteAsync(new DeletePostParams(id, userId));
 
         if (result.IsSuccess)
@@ -95,13 +96,13 @@ public class PostsEndpoints : ICarterModule
         return TypedResults.NotFound();
     }
 
-    public async Task<Results<Ok, NotFound>> RestorePost([FromBody] RestorePostDto dto, IBaseInteractor<RestorePostParams, bool> interactor)
+    public async Task<Results<Ok, NotFound>> RestorePost([FromBody] RestorePostDto dto, IBaseInteractor<RestorePostParams, bool> interactor, ClaimsPrincipal claims)
     {
         if (!Guid.TryParse(dto.PostId, out Guid id))
         {
             return TypedResults.NotFound();
         }
-        var userId = Guid.NewGuid(); // ToDo change to real user
+        var userId = GetUserId(claims);
         var result = await interactor.ExecuteAsync(new RestorePostParams(id, userId));
 
         if (result.IsSuccess)
@@ -113,10 +114,11 @@ public class PostsEndpoints : ICarterModule
 
     public async Task<Results<Created, BadRequest<ErrorsContainer>>> AddPost(
         IBaseInteractor<CreatePostParams, Post> interactor,
-        [FromBody] CreatePostDto dto)
+        [FromBody] CreatePostDto dto,
+        ClaimsPrincipal claims)
     {
-        Guid userGuid = Guid.NewGuid(); // TODO: Заменить на реального пользователя
-        var param = new CreatePostParams(dto.Title, userGuid, dto.Content, dto.ImageId);
+        var userId = GetUserId(claims);
+        var param = new CreatePostParams(dto.Title, userId, dto.Content, dto.ImageId);
         var result = await interactor.ExecuteAsync(param);
 
         if (result.IsSuccess)
@@ -125,6 +127,11 @@ public class PostsEndpoints : ICarterModule
         }
 
         return TypedResults.BadRequest(result.Error);
+    }
+
+    private Guid GetUserId(ClaimsPrincipal claims)
+    {
+        return Guid.Parse(claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
     }
 
     private PostDto MapToDto(Post post)
