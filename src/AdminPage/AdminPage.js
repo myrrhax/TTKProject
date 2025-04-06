@@ -1,54 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminPage.css";
 import { Pencil } from "lucide-react";
 import { Trash } from "lucide-react";
 import { Key } from "lucide-react";
-
-const usersData = [
-  {
-    id: 1,
-    name: "Alyvia Kelley",
-    role: "Администратор",
-    status: "green",
-    date: "06/18/1978",
-    locked: true,
-  },
-  {
-    id: 2,
-    name: "Jaiden Nixon",
-    role: "Пользователь",
-    status: "green",
-    date: "09/30/1983",
-  },
-  {
-    id: 3,
-    name: "Ace Foley",
-    role: "Пользователь",
-    status: "black",
-    date: "12/03/1985",
-  },
-  {
-    id: 4,
-    name: "Nickoli Schmidt",
-    role: "Rejected",
-    status: "red",
-    date: "03/22/1956",
-  },
-  {
-    id: 5,
-    name: "Clayton Charles",
-    role: "Approved",
-    status: "green",
-    date: "10/14/1971",
-  },
-];
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const RoleDot = ({ color }) => <span className={`role-dot ${color}`} />;
 
 export default function UserTable() {
+  const navigate = useNavigate();
+  const [users, setUsers] = useState([])
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem('token');
+      const roleSchema = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+  
+      if (!token) {
+        navigate('/');
+        return;
+      }
+  
+      try {
+        const decoded = jwtDecode(token);
+        // if (decoded[roleSchema] === 'user') {
+        //   navigate('/');
+        // }
+      } catch (error) {
+        console.error('Ошибка при декодировании токена:', error);
+        navigate('/');
+        return;
+      }
+  
+      try {
+        const response = await fetch("http://localhost:5001/api/users");
+        if (response.ok) {
+          const json = await response.json();
+          setUsers(json); // Не забудь обновить состояние!
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке пользователей:", error);
+      }
+    };
+  
+    fetchData();
+  }, [navigate]);
+
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
 
-  const sortedUsers = [...usersData].sort((a, b) => {
+  const sortedUsers = [...users].sort((a, b) => {
     const { key, direction } = sortConfig;
 
     if (!key) return 0;

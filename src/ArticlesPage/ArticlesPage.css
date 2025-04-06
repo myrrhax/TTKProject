@@ -1,10 +1,7 @@
-@import "../Var.css";
-
 .article-page {
   grid-column: 2/12;
   display: flex;
   justify-content: space-between;
-  background: #f9f9f9;
   flex-direction: column;
 }
 
