@@ -45,7 +45,7 @@ const TaskCard = () => {
               </button>
             </a>
             <button className="task-button">Выполнить</button>
-            <button className="task-status">В работу</button>
+            <button className="task-status">Отложить</button>
           </div>
         </div>
       </div>

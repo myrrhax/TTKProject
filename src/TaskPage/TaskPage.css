@@ -1,15 +1,11 @@
 .taskWrap {
-  text-align: center;
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  text-align: start;
+  justify-content: start;
+  background-color: #f1f1f1;
   padding: 10px 20px;
   transition: transform 0.2s;
   width: 100%;
-  height: fit-content;
-  text-align: center;
   margin: auto;
-  margin-top: 70px;
   grid-template-columns: repeat(12, 1fr);
   display: grid;
 }
@@ -37,4 +33,20 @@ button {
   text-align: start;
   font-weight: 400;
   color: var(--input-focus);
+}
+.task-folder {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.button-right {
+  display: flex;
+  gap: 20px;
+}
+.button-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
 }

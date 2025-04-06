@@ -1,15 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header/Header";
-
+import Header from "./Header/Header";
+import WelcomePage from "./WelcomePage/WelcomePage";
 import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import TaskPage from "./TaskPage/TaskPage";
 import AdminPage from "./AdminPage/AdminPage";
-import ReaderPage from "./ReaderPage/Reader";
 import ArticlesPage from "./ArticlesPage/ArticlesPage";
+import ReaderPage from "./ReaderPage/Reader";
 import WriterPage from "./WriterPage/WriterPage";
-import WelcomePage from "./WelcomePage/WelcomePage";
+import LogPagesTasks from "./LogPages/LogTask";
+import LogPagesArticles from "./LogPages/LogArticle";
 import "./App.css";
 
 function App() {
@@ -26,6 +27,8 @@ function App() {
           <Route path="/articles" element={<ArticlesPage />} />
           <Route path="/read" element={<ReaderPage />} />
           <Route path="/write" element={<WriterPage />} />
+          <Route path="/log_tasks" element={<LogPagesTasks />} />
+          <Route path="/log_articles" element={<LogPagesArticles />} />
         </Routes>
       </div>
     </Router>

@@ -11,16 +11,13 @@ import { CodeNode } from "@lexical/code";
 import { LinkNode, AutoLinkNode } from "@lexical/link";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import {
-  TRANSFORMERS,
-  $convertToMarkdownString,
-  ELEMENT_TRANSFORMERS,
-  TEXT_FORMAT_TRANSFORMERS,
-} from "@lexical/markdown";
+import { TRANSFORMERS, $convertToMarkdownString } from "@lexical/markdown";
 import { FloatingToolbar } from "./FloatingToolbar";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getRoot } from "lexical";
 import "./TaskForm.css";
+
+const transformers = Object.values(TRANSFORMERS).flat();
 
 function FocusOnMount() {
   const [editor] = useLexicalComposerContext();
@@ -48,6 +45,34 @@ const editorConfig = {
     LinkNode,
   ],
 };
+function SaveButtonMarkdown() {
+  const [editor] = useLexicalComposerContext();
+
+  const handleSave = () => {
+    editor.getEditorState().read(() => {
+      const markdown = $convertToMarkdownString(transformers);
+      console.log("📄 Markdown:\n", markdown);
+      alert("Markdown выведен в консоль ✅");
+    });
+  };
+
+  return (
+    <button
+      onClick={handleSave}
+      style={{
+        marginTop: "1rem",
+        padding: "0.5rem 1rem",
+        backgroundColor: "#28a745",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+      }}
+    >
+      Сохранить как Markdown
+    </button>
+  );
+}
 function TaskForm({ onClose }) {
   const [title, setTitle] = useState("");
   const [assignee, setAssignee] = useState("");

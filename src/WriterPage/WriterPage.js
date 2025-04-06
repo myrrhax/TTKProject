@@ -10,15 +10,13 @@ import { CodeNode } from "@lexical/code";
 import { LinkNode, AutoLinkNode } from "@lexical/link";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import {
-  TRANSFORMERS,
-  $convertToMarkdownString,
-  ELEMENT_TRANSFORMERS,
-  TEXT_FORMAT_TRANSFORMERS,
-} from "@lexical/markdown";
+import { TRANSFORMERS, $convertToMarkdownString } from "@lexical/markdown";
 import { FloatingToolbar } from "./FloatingToolbar";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getRoot } from "lexical";
+
+// 👇 Определено здесь один раз для всего компонента:
+const transformers = Object.values(TRANSFORMERS).flat();
 
 const editorConfig = {
   namespace: "MyEditor",
@@ -40,14 +38,9 @@ const editorConfig = {
 function SaveButtonMarkdown() {
   const [editor] = useLexicalComposerContext();
 
-  const transformers = Array.isArray(ELEMENT_TRANSFORMERS)
-    ? [...ELEMENT_TRANSFORMERS, ...TEXT_FORMAT_TRANSFORMERS]
-    : Object.values(ELEMENT_TRANSFORMERS).concat(
-        Object.values(TEXT_FORMAT_TRANSFORMERS)
-      );
   const handleSave = () => {
     editor.getEditorState().read(() => {
-      const markdown = $convertToMarkdownString($getRoot(), transformers);
+      const markdown = $convertToMarkdownString(transformers);
       console.log("📄 Markdown:\n", markdown);
       alert("Markdown выведен в консоль ✅");
     });
@@ -116,7 +109,10 @@ export default function WriterPage() {
           />
           <HistoryPlugin />
           <OnChangePlugin onChange={() => {}} />
-          <MarkdownShortcutPlugin transformers={Object.values(TRANSFORMERS)} />
+
+          {/* 👇 Теперь переменная transformers корректно доступна здесь */}
+          <MarkdownShortcutPlugin transformers={transformers} />
+
           <FloatingToolbar />
           <SaveButtonMarkdown />
         </div>
