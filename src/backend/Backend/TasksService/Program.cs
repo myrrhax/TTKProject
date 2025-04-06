@@ -1,49 +1,80 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using TasksService.DataAccess;
+using TasksService.Interactors.Task.Create;
+using TasksService.Interactors.Task.Update;
+using TasksService.Interactors.Task.Delete;
+using TasksService.Interactors.Task.ChangeStatus;
+using TasksService.Interactors.Task.GetByStatus;
+using TasksService.Interactors.History.GetAll;
+using TasksService.Utils;
+using Carter;
 
-namespace TasksService;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
 {
-    public static void Main(string[] args)
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
-        var builder = WebApplication.CreateBuilder(args);
+        Title = "Tasks Service",
+        Version = "v1"
+    });
+});
 
-        // Add services to the container.
-        builder.Services.AddAuthorization();
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+builder.Services.AddAuthentication();
 
-        var app = builder.Build();
+builder.Services.AddJwtAuthentication(builder.Configuration);
+// EF Core
+builder.Services.AddDbContext<ApplicationContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Tasks"));
+});
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+// Carter
+builder.Services.AddCarter();
+
+// �����������
+builder.Services.AddScoped<CreateTaskInteractor>();
+builder.Services.AddScoped<UpdateTaskInteractor>();
+builder.Services.AddScoped<DeleteTaskInteractor>();
+builder.Services.AddScoped<ChangeTaskStatusInteractor>();
+builder.Services.AddScoped<GetTasksByStatusInteractor>();
+builder.Services.AddScoped<GetTaskHistoryInteractor>();
+builder.Services.AddScoped<TaskHistoryLogger>();
+
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+}));
+
+var app = builder.Build();
+
+
+
+
+    if (app.Environment.IsProduction())
+    {
+        var context = app.Services.GetRequiredService<ApplicationContext>();
+        var migrations = await context.Database.GetPendingMigrationsAsync();
+        if (migrations.Any())
         {
-            app.MapOpenApi();
+            await context.Database.MigrateAsync();
         }
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-        {
-            var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                {
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    TemperatureC = Random.Shared.Next(-20, 55),
-                    Summary = summaries[Random.Shared.Next(summaries.Length)]
-                })
-                .ToArray();
-            return forecast;
-        })
-        .WithName("GetWeatherForecast");
-
-        app.Run();
     }
-}
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "TasksService API v1");
+        });
+    }
+
+    app.UseCors("AllowAll");
+    app.MapCarter();
+    app.UseCors("AllowAll");
+    app.Run();

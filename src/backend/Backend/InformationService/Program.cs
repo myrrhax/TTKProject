@@ -1,49 +1,89 @@
+using Carter;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Scalar.AspNetCore;
+using InformationService.Background;
+using InformationService.DataAccess;
+using InformationService.Entities;
+using InformationService.Interactors;
+using InformationService.Interactors.CreatePost;
+using InformationService.Interactors.DeletePost;
+using InformationService.Interactors.GetHistory;
+using InformationService.Interactors.GetPost;
+using InformationService.Interactors.GetPosts;
+using InformationService.Interactors.RestorePost;
+using InformationService.Interactors.UpdatePost;
+using InformationService.Utils;
+using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
-namespace InformationService;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
 {
-    public static void Main(string[] args)
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
-        var builder = WebApplication.CreateBuilder(args);
+        Title = "information", // Название должно совпадать с SwaggerKey в ocelot.json
+        Version = "v1"
+    });
+});
 
-        // Add services to the container.
-        builder.Services.AddAuthorization();
+builder.Services.AddAuthorization();
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+builder.Services.AddDbContext<ApplicationContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Info"));
+});
 
-        var app = builder.Build();
+#region Interactors
+builder.Services.AddScoped<IBaseInteractor<CreatePostParams, Post>, CreatePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<DeletePostParams, Guid>, DeletePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<Guid, Post>, GetPostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<GetPostsParams, GetPostsResult>, GetPostsInteractor>();
+builder.Services.AddScoped<IBaseInteractor<UpdatePostParams, Guid>, UpdatePostInteractor>();
+builder.Services.AddScoped<IBaseInteractor<GetHistoryParams, IEnumerable<PostHistory>>, GetHistoryInteractor>();
+builder.Services.AddScoped<IBaseInteractor<RestorePostParams, bool>, RestorePostInteractor>();
+#endregion
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+}));
 
-        app.UseHttpsRedirection();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
-        app.UseAuthorization();
+builder.Services.AddCarter();
+builder.Services.AddHostedService<DeleteOldPosts>();
 
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+var app = builder.Build();
 
-        app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-        {
-            var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                {
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    TemperatureC = Random.Shared.Next(-20, 55),
-                    Summary = summaries[Random.Shared.Next(summaries.Length)]
-                })
-                .ToArray();
-            return forecast;
-        })
-        .WithName("GetWeatherForecast");
+app.UseSwagger();
+app.UseSwaggerUI();
 
-        app.Run();
+if (app.Environment.IsProduction())
+{
+    var context = app.Services.GetRequiredService<ApplicationContext>();
+    var migrations = await context.Database.GetPendingMigrationsAsync();
+    if (migrations.Any())
+    {
+        await context.Database.MigrateAsync();
+    }
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "information");
+        c.RoutePrefix = string.Empty;
+    });
+
+    if (migrations.Any())
+    {
+        await context.Database.MigrateAsync();
     }
 }
+
+app.UseAuthorization();
+app.UseCors("AllowAll");
+app.MapCarter();
+app.Run();
