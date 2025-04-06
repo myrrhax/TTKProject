@@ -1,7 +1,7 @@
 import React from "react";
 import "./Header.css";
 import { Newspaper, CalendarCheck, Users } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom"; // [[8]]
 
 const navItems = [
   {
@@ -22,6 +22,15 @@ const navItems = [
 ];
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    if (e.target.value === "Выйти") {
+      localStorage.removeItem("token");
+      navigate("/");
+    }
+  };
+
   return (
     <header className="header">
       <div className="head">
@@ -43,9 +52,9 @@ const Header = () => {
               </NavLink>
             ))}
           </nav>
-          <select className="user-select">
-            <option>Derek Alvarado</option>
-            <option>Logout</option>
+          <select className="user-select" onChange={handleLogout} value={""}>
+            <option>ФИО</option>
+            <option>Выйти</option>
           </select>
         </div>
       </div>
