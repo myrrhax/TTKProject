@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminPage.css";
 import { Pencil } from "lucide-react";
 import { Trash } from "lucide-react";
 import { Key } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const usersData = [
   {
@@ -46,6 +48,28 @@ const usersData = [
 const RoleDot = ({ color }) => <span className={`role-dot ${color}`} />;
 
 export default function UserTable() {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const roleSchema = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+
+    if (!token) {
+      navigate('/');
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+      // if (decoded[roleSchema] === 'user') {
+      //   navigate('/');
+      // }
+    } catch (error) {
+      console.error('Ошибка при декодировании токена:', error);
+      navigate('/');
+    }
+  }, [navigate]);
+
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
 
   const sortedUsers = [...usersData].sort((a, b) => {
