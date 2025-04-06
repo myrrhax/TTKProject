@@ -1,6 +1,8 @@
 using Carter;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Scalar.AspNetCore;
 using InformationService.Background;
-using InformationService.Configuration;
 using InformationService.DataAccess;
 using InformationService.Entities;
 using InformationService.Interactors;
@@ -11,15 +13,21 @@ using InformationService.Interactors.GetPost;
 using InformationService.Interactors.GetPosts;
 using InformationService.Interactors.RestorePost;
 using InformationService.Interactors.UpdatePost;
-using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthorization();
-builder.Services.AddSwaggerGen();
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "information", // Название должно совпадать с SwaggerKey в ocelot.json
+        Version = "v1"
+    });
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -44,11 +52,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "information");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
-
 app.MapCarter();
 app.Run();

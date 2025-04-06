@@ -14,33 +14,41 @@ public class DeleteOldPosts(IServiceProvider serviceProvider, ILogger<DeleteOldP
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
-
-            var toDelete = await context.Posts
-                .Where(p => p.History.Any())
-                .Select(p => new
-                {
-                    Post = p,
-                    LastHistory = p.History
-                        .OrderByDescending(h => h.UpdateTime)
-                        .First()
-                })
-                .Where(x => x.LastHistory != null &&
-                            x.LastHistory.EditType == EditType.Deleted &&
-                            x.LastHistory.UpdateTime <= _cutOffDate)
-                .Select(x => x.Post)
-                .ToListAsync();
-
-            logger.LogInformation("Приступаем к очистке...");
-            if (toDelete.Any())
+            try
             {
-                context.Posts.RemoveRange(toDelete);
-                int count = await context.SaveChangesAsync();
-                logger.LogInformation($"Удалено {count} статей");
+                using var scope = serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+
+                var toDelete = await context.Posts
+                    .Where(p => p.History.Any())
+                    .Select(p => new
+                    {
+                        Post = p,
+                        LastHistory = p.History
+                            .OrderByDescending(h => h.UpdateTime)
+                            .First()
+                    })
+                    .Where(x => x.LastHistory != null &&
+                                x.LastHistory.EditType == EditType.Deleted &&
+                                x.LastHistory.UpdateTime <= _cutOffDate)
+                    .Select(x => x.Post)
+                    .ToListAsync(stoppingToken);
+
+                logger.LogInformation("Приступаем к очистке...");
+                if (toDelete.Any())
+                {
+                    context.Posts.RemoveRange(toDelete);
+                    int count = await context.SaveChangesAsync(stoppingToken);
+                    logger.LogInformation($"Удалено {count} статей");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при удалении старых постов");
             }
 
-            await Task.Delay(_sleepPeriod);
+            await Task.Delay(_sleepPeriod, stoppingToken);
         }
     }
+
 }

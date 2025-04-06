@@ -1,4 +1,5 @@
-using Microsoft.EntityFrameworkCore;
+п»їusing Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using TasksService.DataAccess;
 using TasksService.Interactors.Task.Create;
 using TasksService.Interactors.Task.Update;
@@ -13,7 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); // обязательно
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Tasks Service",
+        Version = "v1"
+    });
+});
+
+// вњ… РќСѓР¶РЅРѕ РґР°Р¶Рµ РµСЃР»Рё Р°РІС‚РѕСЂРёР·Р°С†РёСЏ РїРѕРєР° РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ (РёРЅР°С‡Рµ Ocelot/FluentValidator РјРѕРіСѓС‚ РІС‹Р±СЂР°СЃС‹РІР°С‚СЊ РёСЃРєР»СЋС‡РµРЅРёРµ)
+builder.Services.AddAuthentication();
 
 // EF Core
 builder.Services.AddDbContext<ApplicationContext>(options =>
@@ -24,7 +35,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 // Carter
 builder.Services.AddCarter();
 
-// Интеракторы
+// РРЅС‚РµСЂР°РєС‚РѕСЂС‹
 builder.Services.AddScoped<CreateTaskInteractor>();
 builder.Services.AddScoped<UpdateTaskInteractor>();
 builder.Services.AddScoped<DeleteTaskInteractor>();
@@ -35,13 +46,16 @@ builder.Services.AddScoped<TaskHistoryLogger>();
 
 var app = builder.Build();
 
+// Swagger UI
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(); // Не забудь эту строку!
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TasksService API v1");
+    });
 }
 
-// Маршруты
 app.MapCarter();
 
 app.Run();

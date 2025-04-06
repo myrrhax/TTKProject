@@ -5,12 +5,20 @@ using ImageService.Interactors.Upload;
 using ImageService.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Swagger (для удобства тестов)
+// Swagger (для тестирования и работы через Ocelot)
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Image Service",
+        Version = "v1"
+    });
+});
 
 // EF Core + PostgreSQL
 builder.Services.AddDbContext<ApplicationContext>(options =>
@@ -18,10 +26,10 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-// Carter
+// Carter (минималистичная маршрутизация)
 builder.Services.AddCarter();
 
-// Подключаем заглушку авторизации
+// Заглушка авторизации (Dummy)
 builder.Services.AddAuthentication("Dummy")
     .AddScheme<AuthenticationSchemeOptions, DummyAuthHandler>("Dummy", null);
 builder.Services.AddAuthorization();
@@ -30,6 +38,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<UploadImageInteractor>();
 builder.Services.AddScoped<GetImageByIdInteractor>();
 builder.Services.AddScoped<ImageValidator>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
@@ -37,16 +48,18 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Image Service v1");
+    });
 }
 
+// Роутинг и авторизация
 app.UseRouting();
-
-// Включаем авторизацию (сначала .UseAuthentication, потом .UseAuthorization!)
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Carter endpoints
+// Endpoints от Carter
 app.MapCarter();
 
 app.Run();
