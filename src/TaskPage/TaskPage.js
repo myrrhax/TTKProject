@@ -8,11 +8,11 @@ function TaskPage() {
   return (
     <div className="taskWrap">
       <TaskModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-      <div class="title-bar">
+      <div className="title-bar">
         <h1>Задачи</h1>
         <button onClick={() => setModalOpen(true)}>Создать задачу</button>
       </div>
-      <div class="task-component">
+      <div className="task-component">
         <div className="task-folder">
           <h2>Отложенные задачи</h2>
           <TaskCard />
