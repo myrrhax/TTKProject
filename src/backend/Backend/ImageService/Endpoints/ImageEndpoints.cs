@@ -31,6 +31,8 @@ public class ImageEndpoints : ICarterModule
         .RequireAuthorization()
         .WithOpenApi(); 
 
+        .DisableAntiforgery();
+
         app.MapGet("/images/{id:guid}", async (Guid id, GetImageByIdInteractor interactor) =>
         {
             return await interactor.ExecuteAsync(id);

@@ -35,7 +35,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 // Carter
 builder.Services.AddCarter();
 
-// Интеракторы
+// �����������
 builder.Services.AddScoped<CreateTaskInteractor>();
 builder.Services.AddScoped<UpdateTaskInteractor>();
 builder.Services.AddScoped<DeleteTaskInteractor>();

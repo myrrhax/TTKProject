@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen(options =>
 // EF Core + PostgreSQL
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Images"));
 });
 
 // Carter (минималистичная маршрутизация)
@@ -42,6 +42,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+}));
+
 var app = builder.Build();
 
 // Swagger UI
@@ -52,6 +57,17 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Image Service v1");
     });
+app.UseSwagger();
+app.UseSwaggerUI();
+
+if (app.Environment.IsProduction())
+{
+    var context = app.Services.GetRequiredService<ApplicationContext>();
+    var migrations = await context.Database.GetPendingMigrationsAsync();
+    if (migrations.Any())
+    {
+        await context.Database.MigrateAsync();
+    }
 }
 
 // Роутинг и авторизация
@@ -59,7 +75,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Endpoints от Carter
+app.UseCors("AllowAll");
+// Carter endpoints
 app.MapCarter();
 
 app.Run();
