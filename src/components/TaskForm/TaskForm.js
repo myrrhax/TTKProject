@@ -26,7 +26,6 @@ function TaskForm({ onClose }) {
   return (
     <form className="task-form" onSubmit={handleSubmit}>
       <h2>Создание задачи</h2>
-      {/* поля формы */}
       <label htmlFor="title">Название задачи</label>
       <input
         id="title"

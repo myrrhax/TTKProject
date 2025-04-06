@@ -1,10 +1,8 @@
-/* Filename - App.css */
-/* It containds the Form and Page Styling*/
 @import "./Var.css";
 
 ::selection {
-  background-color: var(--color-primary); /* фон при выделении */
-  color: white; /* цвет текста при выделении */
+  background-color: var(--color-primary);
+  color: white;
 }
 
 body {

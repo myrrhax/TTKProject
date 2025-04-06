@@ -8,7 +8,7 @@ function AuthForm({ mode }) {
     login: "",
     fio: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const switchMode = (path) => {
@@ -21,13 +21,11 @@ function AuthForm({ mode }) {
   const validate = () => {
     const newErrors = {};
 
-    // Общие проверки для логина и регистрации
     if (!/^[a-zA-Z]+$/.test(formData.login)) {
       newErrors.login = "Логин должен содержать только латинские буквы";
     }
 
     if (mode === "register") {
-      // Проверки для регистрации
       if (!/^[а-яА-ЯёЁ\s]+$/.test(formData.fio)) {
         newErrors.fio = "ФИО должно содержать только русские буквы";
       }
@@ -36,8 +34,13 @@ function AuthForm({ mode }) {
         newErrors.confirmPassword = "Пароли не совпадают";
       }
 
-      if (!/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+}{":;'?/>.<,][^\\]{6,}$/.test(formData.password)) {
-        newErrors.password = "Пароль должен содержать латинские буквы, цифры и специальные символы";
+      if (
+        !/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+}{":;'?/>.<,][^\\]{6,}$/.test(
+          formData.password
+        )
+      ) {
+        newErrors.password =
+          "Пароль должен содержать латинские буквы, цифры и специальные символы";
       }
     }
 
@@ -110,7 +113,9 @@ function AuthForm({ mode }) {
             placeholder="Введите ваш пароль еще раз"
             required
           />
-          {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
+          {errors.confirmPassword && (
+            <div className="error">{errors.confirmPassword}</div>
+          )}
         </label>
       )}
 
@@ -121,7 +126,9 @@ function AuthForm({ mode }) {
       {mode === "login" && (
         <p className="switch-mode">
           Нет аккаунта?{" "}
-          <span onClick={() => switchMode("/register")}>Зарегистрироваться</span>
+          <span onClick={() => switchMode("/register")}>
+            Зарегистрироваться
+          </span>
         </p>
       )}
       {mode === "register" && (

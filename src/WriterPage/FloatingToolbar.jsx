@@ -64,7 +64,7 @@ export function FloatingToolbar() {
     <div
       ref={toolbarRef}
       style={{
-        position: "fixed", // используем fixed, чтобы позиционирование было по viewport
+        position: "fixed",
         top: position.top,
         left: position.left,
         transform: "translateX(-50%)",

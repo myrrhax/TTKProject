@@ -41,7 +41,6 @@ const usersData = [
     status: "green",
     date: "10/14/1971",
   },
-  // другие...
 ];
 
 const RoleDot = ({ color }) => <span className={`role-dot ${color}`} />;

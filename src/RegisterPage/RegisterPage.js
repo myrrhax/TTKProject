@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./RegisterPage.css";
 import AuthForm from "../components/AuthForm/AuthForm";
 

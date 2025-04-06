@@ -1,4 +1,3 @@
-/* Обёртка таблицы */
 .table-container {
   padding: 24px;
   max-width: 1200px;
@@ -9,7 +8,6 @@
   font-family: "Segoe UI", sans-serif;
 }
 
-/* Сама таблица */
 .user-table {
   width: 100%;
   border-collapse: separate;
@@ -18,7 +16,6 @@
   overflow: hidden;
 }
 
-/* Заголовки */
 .user-table thead th {
   background-color: #f9fafb;
   padding: 14px 16px;
@@ -30,7 +27,6 @@
   cursor: pointer;
 }
 
-/* Ячейки */
 .user-table td {
   padding: 14px 16px;
   border-bottom: 1px solid #f1f1f1;
@@ -42,7 +38,6 @@
   background-color: #f9fafb;
 }
 
-/* Кружки ролей */
 .role-cell {
   display: flex;
   align-items: center;
@@ -67,7 +62,6 @@
   background-color: #6b7280;
 }
 
-/* Действия */
 .actions-cell {
   display: flex;
   gap: 10px;
@@ -85,7 +79,6 @@
   transform: scale(1.2);
 }
 
-/* Сортируемые заголовки */
 .sortable {
   user-select: none;
 }
@@ -94,7 +87,6 @@
   text-decoration: underline;
 }
 
-/* Пагинация */
 .pagination {
   display: flex;
   justify-content: space-between;

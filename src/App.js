@@ -9,6 +9,7 @@ import AdminPage from "./AdminPage/AdminPage";
 import ReaderPage from "./ReaderPage/Reader";
 import ArticlesPage from "./ArticlesPage/ArticlesPage";
 import WriterPage from "./WriterPage/WriterPage";
+import WelcomePage from "./WelcomePage/WelcomePage";
 import "./App.css";
 
 function App() {

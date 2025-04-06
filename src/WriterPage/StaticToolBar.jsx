@@ -22,7 +22,6 @@ export default function StaticToolbar() {
     >
       <button onClick={() => applyFormat("bold")}>Ж</button>
       <button onClick={() => applyFormat("italic")}>К</button>
-      {/* Можно добавить больше кнопок, например, для заголовков, списков и т.д. */}
     </div>
   );
 }
