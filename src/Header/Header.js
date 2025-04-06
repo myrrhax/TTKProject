@@ -1,35 +1,52 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import "./Header.css";
 import { Newspaper, CalendarCheck, Users } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom"; // [[8]]
-
-const navItems = [
-  {
-    to: "/articles",
-    icon: <Newspaper />,
-    text: "Полезная информация",
-  },
-  {
-    to: "/tasks",
-    icon: <CalendarCheck />,
-    text: "Задачи",
-  },
-  {
-    to: "/admin",
-    icon: <Users />,
-    text: "Администрирование",
-  },
-];
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const checkToken = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setUserRole(decoded.role);
+        } catch (error) {
+          console.error("Invalid token");
+          setUserRole(null);
+        }
+      } else {
+        setUserRole(null);
+      }
+    };
+    checkToken();
+  }, []);
 
   const handleLogout = (e) => {
     if (e.target.value === "Выйти") {
       localStorage.removeItem("token");
+      setUserRole(null);
       navigate("/");
     }
   };
+
+  const commonNavItems = [
+    { to: "/articles", icon: <Newspaper />, text: "Полезная информация" },
+    { to: "/tasks", icon: <CalendarCheck />, text: "Задачи" },
+  ];
+
+  const adminNavItem = {
+    to: "/admin",
+    icon: <Users />,
+    text: "Администрирование",
+  };
+
+  const navItems =
+    userRole === "admin" ? [...commonNavItems, adminNavItem] : commonNavItems;
 
   return (
     <header className="header">
