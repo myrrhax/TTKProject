@@ -34,7 +34,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        }).RequireAuthorization();
+        }).RequireAuthorization().WithOpenApi();
 
         app.MapPut("/tasks", async (UpdateTaskRequest request, UpdateTaskInteractor interactor, ClaimsPrincipal claims) =>
         {
@@ -52,7 +52,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        }).RequireAuthorization();
+        }).RequireAuthorization().WithOpenApi();
 
         app.MapDelete("/tasks/{id:guid}", async (Guid id, DeleteTaskInteractor interactor, ClaimsPrincipal claims) =>
         {
@@ -65,7 +65,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok()
                 : Results.BadRequest(result.Error.GetAll());
-        }).RequireAuthorization();
+        }).RequireAuthorization().WithOpenApi();
 
         app.MapPatch("/tasks/status", async (ChangeTaskStatusRequest request, ChangeTaskStatusInteractor interactor, ClaimsPrincipal claims) =>
         {
@@ -79,7 +79,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        }).RequireAuthorization();
+        }).RequireAuthorization().WithOpenApi();
 
         app.MapGet("/tasks/status/{status}", async (string status, GetTasksByStatusInteractor interactor) =>
         {
@@ -87,7 +87,7 @@ public class TaskEndpoints : ICarterModule
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : Results.BadRequest(result.Error.GetAll());
-        }).RequireAuthorization();
+        }).RequireAuthorization().WithOpenApi();
 
         app.MapGet("/tasks/priority/{priority}", async (TaskPriority priority, ApplicationContext db) =>
         {
@@ -96,7 +96,7 @@ public class TaskEndpoints : ICarterModule
                 .ToListAsync();
 
             return Results.Ok(tasks);
-        }).RequireAuthorization();
+        }).RequireAuthorization().WithOpenApi();
     }
 
     private Guid GetUserId(ClaimsPrincipal claims)

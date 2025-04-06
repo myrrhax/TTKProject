@@ -13,11 +13,12 @@ public class HistoryEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/history").RequireAuthorization();
+        var group = app.MapGroup("api/history").RequireAuthorization().WithTags("History");
         group.MapGet("", GetHistory);
     }
 
-    public async Task<Results<Ok<List<HistoryDto>>, NotFound>> GetHistory(IBaseInteractor<GetHistoryParams, IEnumerable<PostHistory>> interactor,
+    public async Task<Results<Ok<List<HistoryDto>>, NotFound>> GetHistory(
+        IBaseInteractor<GetHistoryParams, IEnumerable<PostHistory>> interactor,
         [FromQuery] int page = 1,
         [FromQuery] string query = "",
         [FromQuery] string orderBy = "desc")
@@ -29,15 +30,11 @@ public class HistoryEndpoints : ICarterModule
 
         if (result.IsSuccess)
         {
-            var dtos = new List<HistoryDto>();
-            foreach (var history in result.Value)
-            {
-                dtos.Add(history);
-            }
-
+            var dtos = result.Value.Select(h => (HistoryDto)h).ToList();
             return TypedResults.Ok(dtos);
         }
 
         return TypedResults.NotFound();
     }
 }
+

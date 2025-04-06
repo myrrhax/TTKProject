@@ -1,4 +1,5 @@
-using Microsoft.EntityFrameworkCore;
+п»їusing Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using TasksService.DataAccess;
 using TasksService.Interactors.Task.Create;
 using TasksService.Interactors.Task.Update;
@@ -13,7 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); // обязательно
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Tasks Service",
+        Version = "v1"
+    });
+});
+
+
+builder.Services.AddAuthentication();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 // EF Core
@@ -25,7 +36,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 // Carter
 builder.Services.AddCarter();
 
-// Интеракторы
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 builder.Services.AddScoped<CreateTaskInteractor>();
 builder.Services.AddScoped<UpdateTaskInteractor>();
 builder.Services.AddScoped<DeleteTaskInteractor>();
@@ -41,21 +52,29 @@ builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI(); // Не забудь эту строку!
 
-if (app.Environment.IsProduction())
-{
-    var context = app.Services.GetRequiredService<ApplicationContext>();
-    var migrations = await context.Database.GetPendingMigrationsAsync();
-    if (migrations.Any())
+
+
+    if (app.Environment.IsProduction())
     {
-        await context.Database.MigrateAsync();
+        var context = app.Services.GetRequiredService<ApplicationContext>();
+        var migrations = await context.Database.GetPendingMigrationsAsync();
+        if (migrations.Any())
+        {
+            await context.Database.MigrateAsync();
+        }
     }
-}
 
-app.UseCors("AllowAll");
-// Маршруты
-app.MapCarter();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "TasksService API v1");
+        });
+    }
 
-app.Run();
+    app.UseCors("AllowAll");
+    app.MapCarter();
+    app.UseCors("AllowAll");
+    app.Run();

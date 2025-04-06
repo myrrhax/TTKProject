@@ -18,20 +18,14 @@ public class PostsEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/posts").RequireAuthorization();
+        var group = app.MapGroup("api/posts").RequireAuthorization().WithTags("Posts");
 
-        group.MapGet("/{id:guid}", GetPostById)
-            .WithOpenApi();
-        group.MapGet("", GetPosts)
-            .WithOpenApi();
-        group.MapPost("", AddPost)
-            .WithOpenApi();
-        group.MapPut("/{id:guid}", UpdatePost)
-            .WithOpenApi();
-        group.MapDelete("/{id:guid}", DeletePost)
-            .WithOpenApi();
-        group.MapPost("/restore", RestorePost)
-            .WithOpenApi();
+        group.MapGet("/{id:guid}", GetPostById).WithOpenApi();
+        group.MapGet("", GetPosts).WithOpenApi();
+        group.MapPost("", AddPost).WithOpenApi();
+        group.MapPut("/{id:guid}", UpdatePost).WithOpenApi();
+        group.MapDelete("/{id:guid}", DeletePost).WithOpenApi();
+        group.MapPost("/restore", RestorePost).WithOpenApi();
     }
 
     private async Task<Results<Ok, BadRequest<ErrorsContainer>>> UpdatePost(IBaseInteractor<UpdatePostParams, Guid> interactor,

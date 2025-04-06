@@ -1,37 +1,33 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "TasksService (http)": {
+    "http": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5002",
-      "environmentVariables": {
- 	 "ASPNETCORE_ENVIRONMENT": "Development",
-  	"ConnectionStrings__DefaultConnection": "Host=localhost;Port=5433;Database=tasks_db;Username=postgres;Password=postgres"
-	},
-      "dotnetRunMessages": true
-    },
-    "TasksService (https)": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:5011;http://localhost:5062",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5010"
     },
-    "Docker (TasksService)": {
-      "commandName": "Docker",
+    "https": {
+      "commandName": "Project",
       "launchUrl": "swagger",
-      "publishAllPorts": true,
-      "useSSL": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
-      }
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:5011;http://localhost:5010"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "8083",
+        "ASPNETCORE_HTTP_PORTS": "8082"
+      },
+      "publishAllPorts": true,
+      "useSSL": true
     }
-  }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
 }
