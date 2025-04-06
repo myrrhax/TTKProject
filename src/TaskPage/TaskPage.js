@@ -33,7 +33,7 @@ function TaskPage() {
           <TaskCardInWork />
         </div>
         <div className="task-folder">
-          <h2>Выполеннные задачи</h2>
+          <h2>Выполенные задачи</h2>
           <TaskCardDone />
         </div>
       </div>
