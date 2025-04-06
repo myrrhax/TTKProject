@@ -26,6 +26,10 @@ public class UsersEndpoints : ICarterModule
             .WithOpenApi()
             .RequireAuthorization("AdminOnly");
 
+        group.MapGet("/{id:guid}", GetUserDetails)
+            .WithOpenApi()
+            .RequireAuthorization();
+
         group.MapDelete("/{id:guid}", DeleteUser)
             .WithOpenApi()
             .RequireAuthorization("AdminOnly");
@@ -41,6 +45,17 @@ public class UsersEndpoints : ICarterModule
         group.MapPut("", UpdateUser)
             .WithOpenApi()
             .RequireAuthorization("AdminOnly"); ;
+    }
+
+    public async Task<Results<Ok<UserDto>, NotFound>> GetUserDetails(Guid id, IBaseInteractor<Guid, ApplicationUser> interactor)
+    {
+        var result = await interactor.ExecuteAsync(id);
+        if (result.IsSuccess)
+        {
+            UserDto dto = result.Value;
+            return TypedResults.Ok(dto);
+        }
+        return TypedResults.NotFound();
     }
 
     public async Task<Results<Ok, BadRequest<ErrorsContainer>>> UpdateUser(IBaseInteractor<EditUserParams, bool> interactor, 

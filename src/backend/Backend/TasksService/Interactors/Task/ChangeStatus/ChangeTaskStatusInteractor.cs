@@ -8,9 +8,9 @@ using StatusEnum = TasksService.Entities.TaskStatus;
 namespace TasksService.Interactors.Task.ChangeStatus;
 
 public class ChangeTaskStatusInteractor(ApplicationContext context, TaskHistoryLogger logger)
-    : IBaseInteractor<ChangeTaskStatusRequest, TaskResponse>
+    : IBaseInteractor<ChangeTaskStatusParams, TaskResponse>
 {
-    public async Task<Result<TaskResponse, ErrorsContainer>> ExecuteAsync(ChangeTaskStatusRequest param)
+    public async Task<Result<TaskResponse, ErrorsContainer>> ExecuteAsync(ChangeTaskStatusParams param)
     {
         var task = await context.Tasks.FindAsync(param.TaskId);
         if (task == null)

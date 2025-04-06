@@ -9,9 +9,9 @@ using TaskStatusEnum = TasksService.Entities.TaskStatus;
 namespace TasksService.Interactors.Task.Update;
 
 public class UpdateTaskInteractor(ApplicationContext context, TaskHistoryLogger logger)
-    : IBaseInteractor<UpdateTaskRequest, TaskResponse>
+    : IBaseInteractor<UpdateTaskParams, TaskResponse>
 {
-    public async Task<Result<TaskResponse, ErrorsContainer>> ExecuteAsync(UpdateTaskRequest param)
+    public async Task<Result<TaskResponse, ErrorsContainer>> ExecuteAsync(UpdateTaskParams param)
     {
         var task = await context.Tasks.FindAsync(param.Id);
         if (task == null)

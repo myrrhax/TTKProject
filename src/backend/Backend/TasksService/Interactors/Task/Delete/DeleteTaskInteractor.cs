@@ -6,11 +6,11 @@ using TasksService.Utils;
 namespace TasksService.Interactors.Task.Delete;
 
 public class DeleteTaskInteractor(ApplicationContext context, TaskHistoryLogger logger)
-    : IBaseInteractor<Guid, bool>
+    : IBaseInteractor<DeleteTaskParams, bool>
 {
-    public async Task<Result<bool, ErrorsContainer>> ExecuteAsync(Guid taskId)
+    public async Task<Result<bool, ErrorsContainer>> ExecuteAsync(DeleteTaskParams param)
     {
-        var task = await context.Tasks.FindAsync(taskId);
+        var task = await context.Tasks.FindAsync(param.TaskId);
         if (task == null)
         {
             var errors = new ErrorsContainer();
@@ -21,7 +21,7 @@ public class DeleteTaskInteractor(ApplicationContext context, TaskHistoryLogger 
         context.Tasks.Remove(task);
         await context.SaveChangesAsync();
 
-        await logger.Log(taskId, task.AssignedUserId, TaskChangeType.Deleted, "Удаление задачи");
+        await logger.Log(param.TaskId, param.RedactorId, TaskChangeType.Deleted, "Удаление задачи");
 
         return Result.Success<bool, ErrorsContainer>(true);
     }
