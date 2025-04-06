@@ -1,24 +1,12 @@
-/* Filename - App.css */
-/* It containds the Form and Page Styling*/
-@import "../../Var.css";
-
 .task-form {
   width: 100%;
-}
-
-h1 {
-  font-size: 30;
-  font-weight: 600;
-  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  text-align: center;
-  color: black;
 }
 
 fieldset {
   border: none;
 }
 
-input {
+.task-form input {
   display: block;
   width: 100%;
   /* margin-bottom: 15px; */
@@ -30,12 +18,12 @@ input {
   border-radius: 10px;
 }
 
-input[type="radio"],
-input[type="checkbox"] {
+.task-form input[type="radio"],
+.task-form input[type="checkbox"] {
   display: inline;
   width: 10%;
 }
-select {
+.task-form select {
   display: block;
   width: 100%;
   padding: 10px;
@@ -44,7 +32,7 @@ select {
   border-radius: 5px;
 }
 
-input[type="radio"] {
+.task-form input[type="radio"] {
   width: 18px;
   height: 18px;
   accent-color: var(
@@ -54,22 +42,22 @@ input[type="radio"] {
 }
 
 /* Убираем синий фокус */
-input[type="radio"]:focus {
+.task-form input[type="radio"]:focus {
   outline: none;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
-input:focus,
-select:focus,
-textarea:focus,
-button:focus,
-input[type="checkbox"]:focus {
+.task-form input:focus,
+.task-form select:focus,
+.task-form textarea:focus,
+.task-form button:focus,
+.task-form input[type="checkbox"]:focus {
   outline: none; /* ❌ убирает синий outline */
   border-color: #888; /* ✅ устанавливает свой цвет рамки */
   box-shadow: none; /* ❌ убирает glow, если есть */
 }
 
-label {
+.task-form label {
   font-size: 20px;
   display: block;
   width: 100%;
@@ -80,7 +68,7 @@ label {
   font-weight: bold;
 }
 
-button {
+.task-form button {
   padding: 15px;
   border-radius: 10px;
   border: none;
@@ -91,7 +79,7 @@ button {
   height: fit-content;
   font-size: 16px;
 }
-textarea {
+.task-form textarea {
   resize: none;
   width: 100%;
   max-width: 100%;

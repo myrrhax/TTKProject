@@ -5,7 +5,7 @@ import AuthForm from "../components/AuthForm/AuthForm";
 function LoginPage() {
   return (
     <div className="loginWrap">
-      <AuthForm />
+      <AuthForm mode="login"/>
     </div>
   );
 }
