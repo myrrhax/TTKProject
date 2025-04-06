@@ -12,7 +12,7 @@ function TaskForm({ onClose }) {
     e.preventDefault();
     const taskData = { title, assignee, priority, description, deadline };
     console.log("📌 Submitted Task:", taskData);
-    onClose(); // Закрываем модалку после отправки
+    onClose();
   };
 
   const handleReset = () => {

@@ -24,14 +24,6 @@ function TaskPage() {
           <h2>Выполеннные задачи</h2>
         </div>
       </div>
-      <div className="task-folder">
-        <h2>Задачи в работе</h2>
-        <TaskCard />
-      </div>
-      <div className="task-folder">
-        <h2>Выполненные задачи</h2>
-        <TaskCard />
-      </div>
     </div>
   );
 }

@@ -1,9 +1,4 @@
-/* Filename - App.css */
-/* It containds the Form and Page Styling*/
-@import "../Var.css";
-
 .taskWrap {
-  background: #f2f4f7;
   text-align: center;
   background-color: #fff;
   border-radius: 15px;
@@ -31,7 +26,8 @@
   display: flex;
   justify-content: space-between;
 }
-h2 {
+
+.task-folder h2 {
   font-size: var(--font-size-big);
   text-align: start;
   font-weight: 400;
