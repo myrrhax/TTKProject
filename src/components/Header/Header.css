@@ -72,19 +72,6 @@
   flex-shrink: 0;
 }
 
-.user-dropdown {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.avatar {
-  aspect-ratio: 1/1;
-  width: 32px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
 .user-select {
   appearance: none;
   padding: 4px 8px;

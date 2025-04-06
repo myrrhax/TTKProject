@@ -25,7 +25,9 @@ const Header = () => {
   return (
     <header className="header">
       <div className="head">
-        <span className="logo">ОВО</span>
+        <NavLink to={"/"} style={{ textDecoration: "none" }}>
+          <span className="logo">ОВО</span>
+        </NavLink>
         <div className="icons-user-wrap">
           <nav className="header-icons">
             {navItems.map((item) => (
@@ -41,18 +43,10 @@ const Header = () => {
               </NavLink>
             ))}
           </nav>
-          <div className="user-dropdown">
-            <img
-              src="https://randomuser.me/api/portraits/men/32.jpg"
-              alt="User avatar"
-              className="avatar"
-            />
-            <select className="user-select">
-              <option>Derek Alvarado</option>
-              <option>Profile</option>
-              <option>Logout</option>
-            </select>
-          </div>
+          <select className="user-select">
+            <option>Derek Alvarado</option>
+            <option>Logout</option>
+          </select>
         </div>
       </div>
     </header>

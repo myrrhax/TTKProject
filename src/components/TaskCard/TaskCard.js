@@ -12,14 +12,14 @@ const TaskCard = () => {
           </div>
           <div className="task-dates">
             <span className="dead-date">
-              <div class="status">
+              <div className="status">
                 <span>06.08.25</span>
-                <span class="arrow-right"></span>
+                <span className="arrow-right"></span>
                 <span className="task-deadline">15.08.25</span>
               </div>
             </span>
             <span>
-              <span class="status-dot"></span>
+              <span className="status-dot"></span>
               <span className="task-priority">Высокий</span>
             </span>
           </div>
@@ -29,8 +29,8 @@ const TaskCard = () => {
         </div>
       </div>
 
-      <div class="content-card">
-        <div class="action-side">
+      <div className="content-card">
+        <div className="action-side">
           <div className="task-user-priority">
             <div className="task-user">
               <img
