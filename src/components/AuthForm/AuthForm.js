@@ -48,11 +48,36 @@ function AuthForm({ mode }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Данные формы:", formData);
-      navigate("/tasks");
+      let response;
+      if (mode == 'login') {
+        response = await fetch('http://localhost:5001/api/auth/login', {
+          method: "POST",
+          body: JSON.stringify({login: formData.login, password: formData.password}),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })} else {
+          const [name, surname, secondName] = formData.fio.split(" ")
+          console.log("имя: " + name + " фамилия: " + surname + " отчетсво: " + secondName)
+          response = await fetch('http://localhost:5001/api/auth/register', {
+            method: "POST",
+            body: JSON.stringify({login: formData.login, password: formData.password, name: name, surname: surname, secondName: secondName}),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          })
+      }
+      const json = await response.json()
+      if (response.status == 200) {
+        localStorage.setItem("token", json.token)
+        navigate("/tasks");
+      }
+      else {
+        console.log(json); // ToDo Duplicates
+      }
     }
   };
 
