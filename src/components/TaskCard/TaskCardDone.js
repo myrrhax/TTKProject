@@ -15,7 +15,7 @@ const TaskCard = () => {
               <div className="status">
                 <span>06.08.25</span>
                 <span className="arrow-right"></span>
-                <span className="task-deadline">15.08.25</span>
+                <span className="task-deadline">06.24.25</span>
               </div>
             </span>
             <span>
@@ -42,8 +42,7 @@ const TaskCard = () => {
             <button className="change-button">
               <Pencil className="task-edit-icon" />
             </button>
-            <button className="task-button">Выполнить</button>
-            <button className="task-status">В работу</button>
+            <button className="task-status">Вернуть в работу</button>
           </div>
         </div>
       </div>

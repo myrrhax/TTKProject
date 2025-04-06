@@ -43,7 +43,7 @@ const TaskCard = () => {
               <Pencil className="task-edit-icon" />
             </button>
             <button className="task-button">Выполнить</button>
-            <button className="task-status">В работу</button>
+            <button className="task-status">Отложить</button>
           </div>
         </div>
       </div>

@@ -38,3 +38,19 @@ button {
   font-weight: 400;
   color: var(--input-focus);
 }
+.task-folder {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.button-right {
+  display: flex;
+  gap: 20px;
+}
+.button-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}

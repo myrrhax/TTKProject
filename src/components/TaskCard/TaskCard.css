@@ -1,6 +1,6 @@
 .task-card {
-  min-width: 300px;
-  max-width: 350px;
+  min-width: 250px;
+  max-width: 300px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -121,7 +121,7 @@
   background-color: #e9d5ff;
   color: var(--color-secondary);
   min-height: 40px;
-  width: 110px;
+  width: 70px;
   text-align: center;
   align-items: center;
   justify-content: center;
