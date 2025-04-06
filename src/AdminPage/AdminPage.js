@@ -25,9 +25,9 @@ export default function UserTable() {
   
       try {
         const decoded = jwtDecode(token);
-        // if (decoded[roleSchema] === 'user') {
-        //   navigate('/');
-        // }
+        if (decoded[roleSchema] === 'user') {
+          navigate('/');
+        }
       } catch (error) {
         console.error('Ошибка при декодировании токена:', error);
         navigate('/');
