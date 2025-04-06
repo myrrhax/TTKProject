@@ -8,14 +8,16 @@ export default async function protectedRequestFabric(url, method, body) {
 
     let response = await fetch(url, {
         method: method,
-        body: body,
+        body: JSON.stringify(body),
         headers: {
             "Authorization": "Bearer " + token
         }
     })
 
     if (response.status === 401) {
-        const refreshResponse = await fetch(refreshUrl);
+        const refreshResponse = await fetch(refreshUrl, {
+            method: 'POST'
+        });
 
         if (!refreshResponse.ok) {
             // Refresh не сработал — возвращаем null
@@ -26,7 +28,7 @@ export default async function protectedRequestFabric(url, method, body) {
         // Получили новый токен, повторяем оригинальный запрос
         response = await fetch(url, {
             method: method,
-            body: body,
+            body: JSON.stringify(body),
             headers: {
                 "Authorization": "Bearer " + token
             }
