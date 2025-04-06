@@ -15,9 +15,11 @@ function TaskPage() {
         <h1>Задачи</h1>
         <div class="button-right">
           <button onClick={() => setModalOpen(true)}>Создать задачу</button>
-          <button class="button-block" onClick={() => setModalOpen(true)}>
-            <Clock className="task-edit-icon" />
-          </button>
+          <a href="/log_tasks">
+            <button class="button-block" onClick={() => setModalOpen(true)}>
+              <Clock className="task-edit-icon" />
+            </button>
+          </a>
         </div>
       </div>
       <div className="task-component">

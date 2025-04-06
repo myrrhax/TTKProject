@@ -9,6 +9,8 @@ import AdminPage from "./AdminPage/AdminPage";
 import ArticlesPage from "./ArticlesPage/ArticlesPage";
 import ReaderPage from "./ReaderPage/Reader";
 import WriterPage from "./WriterPage/WriterPage";
+import LogPagesTasks from "./LogPages/LogTask";
+import LogPagesArticles from "./LogPages/LogArticle";
 import "./App.css";
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
           <Route path="/articles" element={<ArticlesPage />} />
           <Route path="/read" element={<ReaderPage />} />
           <Route path="/write" element={<WriterPage />} />
+          <Route path="/log_tasks" element={<LogPagesTasks />} />
+          <Route path="/log_articles" element={<LogPagesArticles />} />
         </Routes>
       </div>
     </Router>
