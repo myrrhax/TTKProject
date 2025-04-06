@@ -89,7 +89,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
   margin-top: 16px;
 }
 
@@ -108,6 +107,7 @@
   align-items: center;
   justify-content: center;
   height: 40px;
+  width: 40px;
   background: var(--gray-element);
   border: none;
   border-radius: var(--radius);
@@ -116,15 +116,18 @@
 
 .task-status {
   display: flex;
-  height: fit-content;
+  min-width: fit-content;
   font-size: var(--font-size-base);
   background-color: #e9d5ff;
   color: var(--color-secondary);
-  max-height: 40px;
+  min-height: 40px;
+  width: 110px;
   text-align: center;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius);
+  padding-inline: 10px;
+  border: 0;
   cursor: pointer;
 }
 
